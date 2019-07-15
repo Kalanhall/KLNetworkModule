@@ -1,0 +1,6 @@
+framework module KLNetworkModule {
+  umbrella header "KLNetworkModule-umbrella.h"
+
+  export *
+  module * { export * }
+}
