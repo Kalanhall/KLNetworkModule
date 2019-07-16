@@ -51,7 +51,7 @@
     return _sessionManager;
 }
 
- - (NSString *)sendRequest:(KLNetworkRequest *)request complete:(KLNetworkResponseBlock)result{
+ - (NSString *)sendRequest:(KLNetworkRequest *)request complete:(KLNetworkResponseBlock)result {
     // 拦截器处理
      if (![self needRequestInterceptor:request]) {
          if ([KLNetworkConfigure shareInstance].enableDebug) {

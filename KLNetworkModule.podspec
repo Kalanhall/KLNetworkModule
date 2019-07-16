@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
   s.name             = 'KLNetworkModule'
   s.version          = '1.0.0'
-  s.summary          = '基于AFN的二次封装网络组件.'
+  s.summary          = '网络组件.'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -18,7 +18,8 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-  组件描述：基于AFN的二次封装网络组件.
+  组件简介：
+  基于AFN的二次封装网络组件.
                        DESC
 
   s.homepage         = 'https://github.com/Kalanhall'

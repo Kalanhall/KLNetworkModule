@@ -64,30 +64,12 @@
     
     if (self.rawData.length > 0) {
         NSDictionary *dic = [self jsonWithData:self.rawData];
-        BOOL result = NO;
-        id code = dic[@"code"];
-        if ([code integerValue] == [[KLNetworkConfigure shareInstance].respondeSuccessCode integerValue]) {
-            result = YES;
-        }
-        
-        if (result) {
-            self.status = KLNetworkResponseStatusSuccess;
-            self.content = [self processCotnentValue:dic];
-            NSString *code = dic[@"code"];
-            if (code && [code isKindOfClass:[NSString class]]) {
-                self.statueCode = ((NSString*)code).integerValue;
-            }
-        } else {
-            self.status = KLNetworkResponseStatusError;
-            self.content = dic[@"msg"];
-            NSString *code = dic[@"code"];
-            if (code && [code isKindOfClass:[NSString class]]) {
-                self.statueCode = ((NSString*)code).integerValue;
-            }
-            if (![self.content isKindOfClass:[NSString class]]) {
-                self.content = @"未知错误";
-            }
-        }
+        self.status = KLNetworkResponseStatusSuccess;
+        self.content = [self processCotnentValue:dic];
+    
+        // 服务器返回字段不确定，根据实际情况进行调整
+        id code = [dic valueForKey:@"code"] ? : [dic valueForKey:@"status"];
+        self.statueCode = [code integerValue];
     } else {
         self.statueCode = NSURLErrorUnknown;
         self.status = KLNetworkResponseStatusError;
@@ -100,7 +82,6 @@
     if ([content isKindOfClass:[NSDictionary class]]) {
         NSMutableDictionary *contentDict = ((NSDictionary *)content).mutableCopy;
         [contentDict removeObjectForKey:@"result"];
-        //        [contentDict removeObjectForKey:@"msg"];
         
         if ([contentDict[@"data"] isKindOfClass:[NSNull class]])
         {
