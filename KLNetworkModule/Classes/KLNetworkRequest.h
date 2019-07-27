@@ -18,11 +18,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,   copy) NSString *baseURL;
 /** 请求路径 eg: /login2 */
 @property (nonatomic,   copy) NSString *requestURL;
-/** 请求头，默认为空 @{} */
+/** 请求头，默认为nil */
 @property (nonatomic, strong) NSDictionary *requestHeader;
-/** 请求参数，加密参数 默认为空 @{} */
+/** 请求参数，加密参数 默认为nil */
 @property (nonatomic, strong) NSDictionary *encryptParams;
-/** 请求参数，不用加密 默认为 @{} */
+/** 参数加密类型 默认为 Base64 */
+@property (nonatomic, assign) KLEncryptType encryptType;
+/** 请求参数，不用加密 默认为nil */
 @property (nonatomic, strong) NSDictionary *normalParams;
 /** 请求方式 默认为 RequestTypePost */
 @property (nonatomic, assign) KLNetworkRequestType requestMethod;

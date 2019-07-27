@@ -7,7 +7,7 @@
 //
 
 #import "KLViewController.h"
-#import "KLNetwork.h"
+#import <KLNetworkModule/KLNetwork.h>
 
 @interface KLViewController ()
 
@@ -18,9 +18,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [KLNetworkConfigure shareInstance].generalServer = @"http://t.weather.sojson.com";
-//    [self sendBasicRequest];
+    [self sendBasicRequest];
 //    [self sendChainRequest];
-    [self sendGroupRequest];
+//    [self sendGroupRequest];
     [KLNetworkConfigure shareInstance].enableDebug = YES;
 }
 
@@ -31,6 +31,8 @@
     KLNetworkRequest *request = [[KLNetworkRequest alloc] init];
     request.requestMethod = KLNetworkRequestTypeGet;
     request.requestURL = @"/api/weather/city/101030100";
+    request.encryptParams = @{@"encryptParams" : @[@"1", @"2"]};
+    request.normalParams = @{@"normalParams" : @"normalParams"};
     
     [KLNetworkModule.shareManager sendRequest:request complete:^(KLNetworkResponse * _Nullable response) {
         
@@ -75,6 +77,9 @@
             request.baseURL = @"http://api.map.baidu.com";
             request.requestURL = @"/location/ip?ak=9zNKGguAbdNC6xwD7syftt533eIf7cSn&callback=showLocation";
             request.requestMethod = KLNetworkRequestTypePost;
+            request.normalParams = @{@"normalParams" : @"normalParams"};
+            request.encryptParams = @{@"encryptParams" : @[@"1", @"2"]};
+            request.encryptType = KLEncryptTypeMD5;
             [groupRequest addRequest:request];
         }
     } complete:^(NSArray<KLNetworkResponse *> * _Nullable responseObjects, BOOL isSuccess) {

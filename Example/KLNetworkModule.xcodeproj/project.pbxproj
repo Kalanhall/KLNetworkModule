@@ -248,7 +248,7 @@
 				ORGANIZATIONNAME = "574068650@qq.com";
 				TargetAttributes = {
 					6003F589195388D20070C39A = {
-						DevelopmentTeam = CJVRVQHY4S;
+						DevelopmentTeam = 579P9269QX;
 					};
 					6003F5AD195388D20070C39A = {
 						TestTargetID = 6003F589195388D20070C39A;
@@ -527,7 +527,7 @@
 			baseConfigurationReference = 24D8E63A05250A652880428C /* Pods-KLNetworkModule_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = CJVRVQHY4S;
+				DEVELOPMENT_TEAM = 579P9269QX;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "KLNetworkModule/KLNetworkModule-Prefix.pch";
 				INFOPLIST_FILE = "KLNetworkModule/KLNetworkModule-Info.plist";
@@ -544,7 +544,7 @@
 			baseConfigurationReference = FD4BDDF2DDCBA9ED7681A45A /* Pods-KLNetworkModule_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = CJVRVQHY4S;
+				DEVELOPMENT_TEAM = 579P9269QX;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "KLNetworkModule/KLNetworkModule-Prefix.pch";
 				INFOPLIST_FILE = "KLNetworkModule/KLNetworkModule-Info.plist";

@@ -7,12 +7,30 @@
 //
 
 #import "KLAppDelegate.h"
+#import <KLNetworkModule/KLNetwork.h>
 
 @implementation KLAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    
+    // 全局静态公参
+    KLNetworkConfigure.shareInstance.generalParameters = @{@"generalParameters" : @"parameters"};
+    
+    // 全局动态公参
+    KLNetworkConfigure.shareInstance.generalDynamicParameters = ^NSDictionary<NSString *,id> * _Nonnull{
+        return @{@"generalDynamicParameters" : [NSString stringWithFormat:@"%@", @(arc4random_uniform(99))]};
+    };
+    
+    // 全局静态请求头参数设置
+    KLNetworkConfigure.shareInstance.generalHeaders = @{@"generalHeaders" : @"headers"};
+    
+    // 全局动态请求头参数设置，token，用户信息等
+    KLNetworkConfigure.shareInstance.generalDynamicHeaders = ^NSDictionary<NSString *,NSString *> * _Nonnull{
+        return @{@"generalDynamicHeaders" : [NSString stringWithFormat:@"%@", @(arc4random_uniform(99))]};
+    };
+    
     return YES;
 }
 

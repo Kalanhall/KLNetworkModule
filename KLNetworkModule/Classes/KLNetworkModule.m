@@ -64,7 +64,7 @@
 }
 
 - (NSString *_Nullable)sendRequestWithConfigBlock:(nonnull RequestConfigBlock)requestBlock complete:(nonnull KLNetworkResponseBlock) result{
-    KLNetworkRequest *request = [KLNetworkRequest new];
+    KLNetworkRequest *request = [[KLNetworkRequest alloc] init];
     requestBlock(request);
     // 拦截器处理
     if (![self needRequestInterceptor:request]) {

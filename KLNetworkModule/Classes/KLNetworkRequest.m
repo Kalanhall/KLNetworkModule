@@ -11,20 +11,21 @@
 #import <AFNetworking/AFNetworking.h>
 #import "NSString+KLNetworkModule.h"
 #import "NSDictionary+KLNetworkModule.h"
+#import <CommonCrypto/CommonDigest.h>
 
 @implementation KLNetworkRequest
 
 - (instancetype)init {
     self = [super init];
     if (self) {
-        _requestMethod = KLNetworkRequestTypePost;
-        _reqeustTimeoutInterval = 30.0;
-        _encryptParams = @{};
-        _normalParams = @{};
-        _requestHeader = @{};
-        _retryCount = 1;
-        _apiVersion = @"1.0";
-        
+        _requestMethod  = KLNetworkRequestTypePost;
+        _reqeustTimeoutInterval = 10.0;
+        _encryptParams  = nil;
+        _encryptType    = KLEncryptTypeBase64;
+        _normalParams   = nil;
+        _requestHeader  = nil;
+        _apiVersion     = @"1.0";
+        _retryCount     = 1;
     }
     return self;
 }
@@ -36,16 +37,28 @@
  */
 - (NSURLRequest *)generateRequest {
     AFHTTPRequestSerializer *serializer = [AFHTTPRequestSerializer serializer];
+    [serializer willChangeValueForKey:@"timeoutInterval"];
     serializer.timeoutInterval = [self reqeustTimeoutInterval];
+    [serializer didChangeValueForKey:@"timeoutInterval"];
     serializer.cachePolicy = NSURLRequestUseProtocolCachePolicy;
     NSMutableURLRequest *request = [serializer requestWithMethod:[self httpMethod] URLString:[self.baseURL stringByAppendingString:self.requestURL] parameters:[self generateRequestBody] error:NULL];
     // 请求头
     NSMutableDictionary *header = request.allHTTPHeaderFields.mutableCopy;
-    if (!header)
-    {
+    if (!header) {
         header = [[NSMutableDictionary alloc] init];
     }
+    // 静态公共请求头
     [header addEntriesFromDictionary:[KLNetworkConfigure shareInstance].generalHeaders];
+    // 动态公共请求头
+    if ([KLNetworkConfigure shareInstance].generalDynamicHeaders) {
+        NSDictionary *temp = [KLNetworkConfigure shareInstance].generalDynamicHeaders();
+        [header addEntriesFromDictionary:temp];
+    }
+    // 特殊请求头
+    if (self.requestHeader) {
+        [header addEntriesFromDictionary:self.requestHeader];
+    }
+    
     request.allHTTPHeaderFields = header;
     
     return request.copy;
@@ -53,8 +66,53 @@
 
 /** 公共请求参数 @return 请求参数字典 */
 - (NSDictionary *)generateRequestBody {
-    NSDictionary *commonDic = [KLNetworkConfigure shareInstance].generalParameters;
-    return commonDic;
+    // 优先处理加密处理的请求参数
+    NSMutableDictionary *temp = NSMutableDictionary.dictionary;
+    if (self.encryptParams) {
+        NSMutableDictionary *mutableDic = self.encryptParams.mutableCopy;
+        [mutableDic.allKeys enumerateObjectsUsingBlock:^(NSString *key, NSUInteger idx, BOOL * _Nonnull stop) {
+            id value = mutableDic[key];
+            NSError *error;
+            NSData *data = [NSJSONSerialization dataWithJSONObject:value options:0 error:&error];
+            NSString *valueString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            
+            // MD5/Base64加密或者其他方式
+            switch (self.encryptType) {
+                case KLEncryptTypeBase64:
+                    valueString = [self base64ToString:valueString];
+                    break;
+                    
+                case KLEncryptTypeMD5:
+                    valueString = [self md5To32BitString:valueString];
+                    break;
+                    
+                default:
+                    valueString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                    break;
+            }
+            
+            [mutableDic setValue:valueString forKey:key];
+        }];
+        [temp addEntriesFromDictionary:mutableDic];
+    }
+    
+    // 静态公共参数
+    if ([KLNetworkConfigure shareInstance].generalParameters) {
+        [temp addEntriesFromDictionary:[KLNetworkConfigure shareInstance].generalParameters];
+    }
+    
+    // 动态公共参数
+    if ([KLNetworkConfigure shareInstance].generalDynamicParameters) {
+        NSDictionary *dparam = [KLNetworkConfigure shareInstance].generalDynamicParameters();
+        [temp addEntriesFromDictionary:dparam];
+    }
+    
+    // 接口请求参数
+    if (self.normalParams) {
+        [temp addEntriesFromDictionary:self.normalParams];
+    }
+    
+    return temp.copy;
 }
 
 - (NSString *)httpMethod {
@@ -77,11 +135,34 @@
     return @"GET";
 }
 
+- (NSString *)requestMethodName {
+    if (_requestMethodName == nil) {
+        return [self httpMethod];
+    }
+    return _requestMethodName;
+}
+
 - (NSString *)baseURL {
     if (!_baseURL) {
         _baseURL = [KLNetworkConfigure shareInstance].generalServer;
     }
     return _baseURL;
+}
+
+- (NSString *)base64ToString:(NSString *)string {
+    NSData *tempstrdata = [string dataUsingEncoding:NSUTF8StringEncoding];
+    return [tempstrdata base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+}
+
+- (NSString *)md5To32BitString:(NSString *)string {
+    const char *cStr = [string UTF8String];         // 先转为UTF_8编码的字符串
+    unsigned char digest[CC_MD5_DIGEST_LENGTH];     // 设置一个接受字符数组
+    CC_MD5( cStr, (int)strlen(cStr), digest );      // 把str字符串转换成为32位的16进制数列，存到了result这个空间中
+    NSMutableString *result = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH * 2];
+    for(int i = 0; i < CC_MD5_DIGEST_LENGTH; i++) {
+        [result appendFormat:@"%02x", digest[i]];   // 将16字节的16进制转成32字节的16进制字符串
+    }
+    return [result uppercaseString];                // 大写字母字符串
 }
 
 - (void)dealloc {

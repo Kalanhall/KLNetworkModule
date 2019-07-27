@@ -13,13 +13,17 @@ NS_ASSUME_NONNULL_BEGIN
 /** 参数配置类 */
 @interface KLNetworkConfigure : NSObject
 /** 公共参数 */
-@property (nonatomic, strong, nullable) NSDictionary<NSString *, id> *generalParameters;
-/** 公共请求头 */
-@property (nonatomic, strong, nullable) NSDictionary<NSString *, NSString *> *generalHeaders;
+@property (nonatomic, strong, nullable) NSDictionary <NSString *, id> *generalParameters;
+/** 动态公共参数*/
+@property (nonatomic, copy, nullable) NSDictionary <NSString *, id> * (^generalDynamicParameters)(void);
+/** 静态公共请求头 */
+@property (nonatomic, strong, nullable) NSDictionary <NSString *, NSString *> *generalHeaders;
+/** 动态公共请求头 */
+@property (nonatomic, copy, nullable) NSDictionary <NSString *, NSString *> * (^generalDynamicHeaders)(void);
 /** 服务器地址 默认 */
-@property (nonatomic, copy  , readwrite, nonnull) NSString *generalServer;
+@property (nonatomic, copy, readwrite, nonnull) NSString *generalServer;
 /** 与后端约定的请求成功Code */
-@property (nonatomic, copy )NSString * _Nullable respondeSuccessCode;
+@property (nonatomic, copy)NSString * _Nullable respondeSuccessCode;
 /** 是否为调试模式（默认 false, 当为 true 时，会输出 网络请求日志） */
 @property (nonatomic, assign) BOOL enableDebug;
 

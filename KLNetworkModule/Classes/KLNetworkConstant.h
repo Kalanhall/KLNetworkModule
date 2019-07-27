@@ -15,7 +15,7 @@
 @class KLNetworkResponse,KLNetworkRequest,KLNetworkGroupRequest,KLNetworkChainRequest;
 
 typedef NS_ENUM (NSUInteger, KLNetworkRequestType){
-    KLNetworkRequestTypeGet,
+    KLNetworkRequestTypeGet = 0,
     KLNetworkRequestTypePost,
     KLNetworkRequestTypePut,
     KLNetworkRequestTypeDelete,
@@ -24,7 +24,12 @@ typedef NS_ENUM (NSUInteger, KLNetworkRequestType){
 
 typedef NS_ENUM (NSUInteger, KLNetworkResponseStatus){
     KLNetworkResponseStatusError = 0,
-    KLNetworkResponseStatusSuccess = 1
+    KLNetworkResponseStatusSuccess
+};
+
+typedef NS_ENUM (NSUInteger, KLEncryptType){
+    KLEncryptTypeBase64 = 0,
+    KLEncryptTypeMD5            // 32位加密&大写字母
 };
 
 // 响应配置 Block
