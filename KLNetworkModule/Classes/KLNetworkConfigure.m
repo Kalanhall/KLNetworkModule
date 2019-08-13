@@ -22,6 +22,9 @@
     self = [super init];
     if (self) {
         _enableDebug = NO;
+        _respondeMsgKeys     = @[@"message", @"msg"];
+        _respondeDataKeys    = @[@"data"];
+        _respondeSuccessKeys = @[@"code", @"status"];
     }
     return self;
 }

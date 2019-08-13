@@ -20,12 +20,8 @@
     if (self) {
         _requestMethod  = KLNetworkRequestTypePost;
         _reqeustTimeoutInterval = 10.0;
-        _encryptParams  = nil;
-        _encryptType    = KLEncryptTypeBase64;
-        _normalParams   = nil;
-        _requestHeader  = nil;
-        _apiVersion     = @"1.0";
-        _retryCount     = 1;
+        _apiVersion = @"1.0";
+        _retryCount = 1;
     }
     return self;
 }
@@ -73,25 +69,34 @@
         [mutableDic.allKeys enumerateObjectsUsingBlock:^(NSString *key, NSUInteger idx, BOOL * _Nonnull stop) {
             id value = mutableDic[key];
             NSError *error;
-            NSData *data = [NSJSONSerialization dataWithJSONObject:value options:0 error:&error];
-            NSString *valueString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-            
-            // MD5/Base64加密或者其他方式
             switch (self.encryptType) {
-                case KLEncryptTypeBase64:
-                    valueString = [self base64ToString:valueString];
+                case KLEncryptTypeBase64: {
+                    NSData *data = [NSJSONSerialization dataWithJSONObject:value options:0 error:&error];
+                    if (error == nil) {
+                        NSString *valueString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                        valueString = [self base64ToString:valueString];
+                        [mutableDic setValue:valueString forKey:key];
+                    } else {
+                        NSLog(@"数据序列化出错");
+                    }
+                }
                     break;
-                    
-                case KLEncryptTypeMD5:
-                    valueString = [self md5To32BitString:valueString];
+                
+                case KLEncryptTypeMD5: {
+                    NSData *data = [NSJSONSerialization dataWithJSONObject:value options:0 error:&error];
+                    if (error == nil) {
+                        NSString *valueString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                        valueString = [self md5To32BitString:valueString];
+                        [mutableDic setValue:valueString forKey:key];
+                    } else {
+                        NSLog(@"数据序列化出错");
+                    }
+                }
                     break;
                     
                 default:
-                    valueString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                     break;
             }
-            
-            [mutableDic setValue:valueString forKey:key];
         }];
         [temp addEntriesFromDictionary:mutableDic];
     }

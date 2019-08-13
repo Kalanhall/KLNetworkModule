@@ -14,14 +14,14 @@ PODS:
   - AFNetworking/Serialization (3.2.1)
   - AFNetworking/UIKit (3.2.1):
     - AFNetworking/NSURLSession
-  - KLNetworkModule (1.0.3):
+  - KLNetworkModule (1.0.4):
     - AFNetworking (= 3.2.1)
 
 DEPENDENCIES:
   - KLNetworkModule (from `../`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - AFNetworking
 
 EXTERNAL SOURCES:
@@ -30,8 +30,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
-  KLNetworkModule: e9847c60af2f14fa95bf66ce1364f86bff7dd00c
+  KLNetworkModule: 814a948682cf311739905c09ac5dac034ae15546
 
 PODFILE CHECKSUM: 12ff97d320722578c3f62e65d04f63109e635835
 
-COCOAPODS: 1.7.5
+COCOAPODS: 1.8.0.beta.1

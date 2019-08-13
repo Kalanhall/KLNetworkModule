@@ -31,6 +31,10 @@
         return @{@"generalDynamicHeaders" : [NSString stringWithFormat:@"%@", @(arc4random_uniform(99))]};
     };
     
+    KLNetworkConfigure.shareInstance.responseUnifiedCallBack = ^(id _Nullable response) {
+        NSLog(@"请求统一回调方法");
+    };
+    
     return YES;
 }
 

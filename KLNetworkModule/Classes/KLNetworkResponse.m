@@ -11,12 +11,18 @@
 
 @interface KLNetworkResponse()
 
-@property (nonatomic, copy, readwrite) NSData *rawData;
-@property (nonatomic, assign, readwrite) KLNetworkResponseStatus status;
-@property (nonatomic, copy, readwrite) id content;
-@property (nonatomic, assign, readwrite) NSInteger statueCode;
-@property (nonatomic, assign, readwrite) NSInteger requestId;
-@property (nonatomic, copy, readwrite) NSURLRequest *request;
+@property (nonatomic, copy  ) NSData *rawData;
+@property (nonatomic, assign) KLNetworkResponseStatus status;
+/** 服务器返回数据，成功则为字典类型，失败则为字符串 */
+@property (nonatomic, copy  ) id content;
+/** 便捷取值，content下如果有data字段 */
+@property (nonatomic, copy  ) id data;
+/** 服务器返回消息 */
+@property (nonatomic, copy  , nonnull) NSString *message;
+/** 服务器返回状态码 */
+@property (nonatomic, assign) NSInteger statueCode;
+@property (nonatomic, copy  ) NSString *requestId;
+@property (nonatomic, copy  ) NSURLRequest *request;
 
 @end
 
@@ -29,7 +35,7 @@
     self = [super init];
     if (self)
     {
-        self.requestId = [requestId unsignedIntegerValue];
+        self.requestId = [NSString stringWithFormat:@"%@", @([requestId unsignedIntegerValue])];
         self.request = request;
         self.rawData = responseData;
         [self inspectionResponse:nil];
@@ -44,7 +50,7 @@
     self = [super init];
     if (self)
     {
-        self.requestId = [requestId unsignedIntegerValue];
+        self.requestId = [NSString stringWithFormat:@"%@", @([requestId unsignedIntegerValue])];
         self.request = request;
         self.rawData = responseData;
         [self inspectionResponse:error];
@@ -57,40 +63,51 @@
 - (void)inspectionResponse:(NSError *)error {
     if (error) {
         self.status = KLNetworkResponseStatusError;
-        self.content = @"网络异常，请稍后再试";
+        self.content = nil;
+        self.message = @"网络异常，请稍后再试";
         self.statueCode = error.code;
         return;
     }
     
     if (self.rawData.length > 0) {
-        NSDictionary *dic = [self jsonWithData:self.rawData];
-        self.status = KLNetworkResponseStatusSuccess;
-        self.content = [self processCotnentValue:dic];
-    
-        // 服务器返回字段不确定，根据实际情况进行调整
-        id code = [dic valueForKey:@"code"] ? : [dic valueForKey:@"status"];
+        self.content = [self jsonWithData:self.rawData];
+        
+        __block id value = nil;
+        // MARK: ⚠️ 状态码获取
+        [KLNetworkConfigure.shareInstance.respondeSuccessKeys enumerateObjectsUsingBlock:^(id  _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
+            value = [self.content valueForKey:key];
+            if (value) *stop = YES;
+        }];
+        id code = value;
         self.statueCode = [code integerValue];
+        // MARK: ⚠️ 数据获取
+        [KLNetworkConfigure.shareInstance.respondeDataKeys enumerateObjectsUsingBlock:^(id  _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
+            value = [self.content valueForKey:key];
+            if (value) *stop = YES;
+        }];
+        self.data = value;
+        // MARK: ⚠️ 消息获取
+        [KLNetworkConfigure.shareInstance.respondeMsgKeys enumerateObjectsUsingBlock:^(id  _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
+            value = [self.content valueForKey:key];
+            if (value) *stop = YES;
+        }];
+        self.message = value ? : @"";
+        
+        if (self.statueCode == 200) {
+            self.status = KLNetworkResponseStatusSuccess;
+        } else {
+            self.status = KLNetworkResponseStatusError;
+        }
     } else {
         self.statueCode = NSURLErrorUnknown;
         self.status = KLNetworkResponseStatusError;
-        self.content = @"未知错误";
+        self.content = nil;
+        self.message = @"未知错误";
     }
-}
-
-/** 临时 返回数据处理 */
-- (id)processCotnentValue:(id)content {
-    if ([content isKindOfClass:[NSDictionary class]]) {
-        NSMutableDictionary *contentDict = ((NSDictionary *)content).mutableCopy;
-        [contentDict removeObjectForKey:@"result"];
-        
-        if ([contentDict[@"data"] isKindOfClass:[NSNull class]])
-        {
-            [contentDict removeObjectForKey:@"data"];
-        }
-        
-        return contentDict.copy;
+    
+    if (KLNetworkConfigure.shareInstance.responseUnifiedCallBack) {
+        KLNetworkConfigure.shareInstance.responseUnifiedCallBack(self.content);
     }
-    return content;
 }
 
 @end

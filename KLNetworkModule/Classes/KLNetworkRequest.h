@@ -20,13 +20,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,   copy) NSString *requestURL;
 /** 请求头，默认为nil */
 @property (nonatomic, strong) NSDictionary *requestHeader;
-/** 请求参数，加密参数 默认为nil */
-@property (nonatomic, strong) NSDictionary *encryptParams;
-/** 参数加密类型 默认为 Base64 */
+/** 参数加密类型，对加密参数字典的value进行加密 默认不加密 */
 @property (nonatomic, assign) KLEncryptType encryptType;
+/** 请求参数，加密参数，未设置加密类型时与normalParams 混用 */
+@property (nonatomic, strong) NSDictionary <NSCoding> *encryptParams;
 /** 请求参数，不用加密 默认为nil */
-@property (nonatomic, strong) NSDictionary *normalParams;
-/** 请求方式 默认为 RequestTypePost */
+@property (nonatomic, strong) NSDictionary <NSCoding> *normalParams;
+/** 请求方式 默认为 Post */
 @property (nonatomic, assign) KLNetworkRequestType requestMethod;
 /** 请求方式string */
 @property (nonatomic,   copy) NSString *requestMethodName;

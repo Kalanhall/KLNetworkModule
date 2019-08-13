@@ -12,19 +12,28 @@ NS_ASSUME_NONNULL_BEGIN
 
 /** 参数配置类 */
 @interface KLNetworkConfigure : NSObject
+
 /** 公共参数 */
-@property (nonatomic, strong, nullable) NSDictionary <NSString *, id> *generalParameters;
+@property (nonatomic, strong, nullable) NSDictionary <NSString *, NSString *> *generalParameters;
 /** 动态公共参数*/
-@property (nonatomic, copy, nullable) NSDictionary <NSString *, id> * (^generalDynamicParameters)(void);
+@property (nonatomic, copy  , nullable) NSDictionary <NSString *, NSString *> * (^generalDynamicParameters)(void);
 /** 静态公共请求头 */
 @property (nonatomic, strong, nullable) NSDictionary <NSString *, NSString *> *generalHeaders;
 /** 动态公共请求头 */
-@property (nonatomic, copy, nullable) NSDictionary <NSString *, NSString *> * (^generalDynamicHeaders)(void);
-/** 服务器地址 默认 */
-@property (nonatomic, copy, readwrite, nonnull) NSString *generalServer;
-/** 与后端约定的请求成功Code */
-@property (nonatomic, copy)NSString * _Nullable respondeSuccessCode;
-/** 是否为调试模式（默认 false, 当为 true 时，会输出 网络请求日志） */
+@property (nonatomic, copy  , nullable) NSDictionary <NSString *, NSString *> * (^generalDynamicHeaders)(void);
+/** 所有请求统一回调方法 */
+@property (nonatomic, copy  , nullable) void (^responseUnifiedCallBack)(_Nullable id response);
+/** 服务器地址 */
+@property (nonatomic, copy  , nonnull) NSString *generalServer;
+/** 与后端约定的请求成功code，默认为 200 */
+@property (nonatomic, copy, nullable) NSString * respondeSuccessCode;
+/** 与后端约定的请求结果状态字段, 默认 code, status */
+@property (nonatomic, copy, nonnull) NSArray <NSString *> *respondeSuccessKeys;
+/** 与后端约定的请求结果数据字段集合, 默认 data */
+@property (nonatomic, copy, nonnull) NSArray <NSString *> *respondeDataKeys;
+/** 与后端约定的请求结果消息字段集合, 默认 message, msg */
+@property (nonatomic, copy, nonnull) NSArray <NSString *> *respondeMsgKeys;
+/** 是否为调试模式（默认 NO, 当为 YES 时，会输出 网络请求日志） */
 @property (nonatomic, assign) BOOL enableDebug;
 
 + (_Nonnull instancetype)shareInstance;
