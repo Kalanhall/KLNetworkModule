@@ -20,7 +20,8 @@
 
 @implementation KLNetworkModule
 
-+ (nonnull instancetype)shareManager {
++ (nonnull instancetype)shareManager
+{
     static dispatch_once_t onceToken;
     static KLNetworkModule *manager = nil;
     dispatch_once(&onceToken, ^{
@@ -29,7 +30,8 @@
     return manager;
 }
 
-- (instancetype)init {
+- (instancetype)init
+{
     self = [super init];
     if (self) {
         _requestInterceptorObjectArray = [NSMutableArray arrayWithCapacity:3];
@@ -39,7 +41,8 @@
     return self;
 }
 
-- (AFHTTPSessionManager *)sessionManager {
+- (AFHTTPSessionManager *)sessionManager
+{
     if (_sessionManager == nil){
         NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
         configuration.HTTPMaximumConnectionsPerHost = 4;
@@ -51,67 +54,34 @@
     return _sessionManager;
 }
 
- - (NSString *)sendRequest:(KLNetworkRequest *)request complete:(KLNetworkResponseBlock)result {
+// MARK: - 🔥 Nomal Request
+ - (NSString *)sendRequest:(KLNetworkRequest *)request complete:(KLNetworkResponseBlock)result
+{
     // 拦截器处理
      if (![self needRequestInterceptor:request]) {
-         if ([KLNetworkConfigure shareInstance].enableDebug) {
-             NSLog(@"该请求已经取消");
-         }
+         if (KLNetworkConfigure.shareInstance.enableDebug) NSLog(@"该请求已经取消");
          return nil;
      }
      [KLNetworkLogger logDebugInfoWithRequest:request];
      return [self requestWithRequest:[request generateRequest]  complete:result];
 }
 
-- (NSString *_Nullable)sendRequestWithConfigBlock:(nonnull RequestConfigBlock)requestBlock complete:(nonnull KLNetworkResponseBlock) result{
+- (NSString *_Nullable)sendRequestWithConfigBlock:(nonnull RequestConfigBlock)requestBlock complete:(nonnull KLNetworkResponseBlock) result
+{
     KLNetworkRequest *request = [[KLNetworkRequest alloc] init];
     requestBlock(request);
     // 拦截器处理
     if (![self needRequestInterceptor:request]) {
-        if ([KLNetworkConfigure shareInstance].enableDebug)
-        {
-            NSLog(@"该请求已经取消");
-        }
+        if (KLNetworkConfigure.shareInstance.enableDebug) NSLog(@"该请求已经取消");
         return nil;
     }
     [KLNetworkLogger logDebugInfoWithRequest:request];
     return [self requestWithRequest:[request generateRequest] complete:result];
 }
 
-
-/**
- 取消一个网络请求
- 
- @param requestID 请求id
- */
-- (void)cancelRequestWithRequestID:(nonnull NSString *)requestID {
-    NSURLSessionDataTask *requestOperation = self.reqeustDictionary[requestID];
-    [requestOperation cancel];
-    [self.reqeustDictionary removeObjectForKey:requestID];
-}
-
-
-/**
- 取消很多网络请求
- 
- @param requestIDList @[请求id,请求id]
- */
-- (void)cancelRequestWithRequestIDList:(nonnull NSArray<NSString *> *)requestIDList {
-    for (NSString *requestId in requestIDList){
-        [self cancelRequestWithRequestID:requestId];
-    }
-}
-#pragma - private
-
-/**
- 发起请求
-
- @param request NSURLRequest
- @param complete 回调
- @return requestId
- */
-- (NSString *)requestWithRequest:(NSURLRequest *)request complete:(KLNetworkResponseBlock)complete {
-    
+// MARK: Nomal private method
+- (NSString *)requestWithRequest:(NSURLRequest *)request complete:(KLNetworkResponseBlock)complete
+{
     __block NSURLSessionDataTask *task = nil;
     task = [self.sessionManager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
         [self.reqeustDictionary removeObjectForKey:@([task taskIdentifier])];
@@ -125,13 +95,11 @@
     return requestId;
 }
 
-- (void)requestFinishedWithBlock:(KLNetworkResponseBlock)blk task:(NSURLSessionTask *)task data:(NSData *)data error:(NSError *)error {
-    if ([KLNetworkConfigure shareInstance].enableDebug){
-        //打印返回参数
-        [KLNetworkLogger logDebugInfoWithTask:task data:data error:error];
-    }
+- (void)requestFinishedWithBlock:(KLNetworkResponseBlock)blk task:(NSURLSessionTask *)task data:(NSData *)data error:(NSError *)error
+{
+    if (KLNetworkConfigure.shareInstance.enableDebug) [KLNetworkLogger logDebugInfoWithTask:task data:data error:error];
     
-    if (error){
+    if (error) {
         KLNetworkResponse *rsp = [[KLNetworkResponse alloc] initWithRequestId:@([task taskIdentifier]) request:task.originalRequest responseData:data error:error];
         for (id obj in self.responseInterceptorObjectArray)
         {
@@ -156,13 +124,145 @@
     }
 }
 
-- (BOOL)needRequestInterceptor:(KLNetworkRequest *)request {
+// MARK: - 🔥 Upload Request
+- (NSString *_Nullable)sendRequest:(nonnull KLNetworkRequest *)request fromData:(NSData *)bodyData progress:(void (^)(NSProgress *uploadProgress))progress complete:(nonnull KLNetworkResponseBlock)result
+{
+    // 拦截器处理
+    if (![self needRequestInterceptor:request]) {
+        if (KLNetworkConfigure.shareInstance.enableDebug) NSLog(@"该请求已经取消");
+        return nil;
+    }
+    [KLNetworkLogger logDebugInfoWithRequest:request];
+    return [self requestWithUploadRequest:[request generateRequest] fromData:bodyData progress:progress complete:result];
+}
+
+// MARK: Upload private method
+- (NSString *_Nullable)sendRequestWithConfigBlock:(nonnull RequestConfigBlock)requestBlock fromData:(NSData *)bodyData progress:(void (^)(NSProgress *uploadProgress))progress complete:(nonnull KLNetworkResponseBlock)result
+{
+    KLNetworkRequest *request = [[KLNetworkRequest alloc] init];
+    requestBlock(request);
+    // 拦截器处理
+    if (![self needRequestInterceptor:request]) {
+        if (KLNetworkConfigure.shareInstance.enableDebug) NSLog(@"该请求已经取消");
+        return nil;
+    }
+    [KLNetworkLogger logDebugInfoWithRequest:request];
+    return [self requestWithUploadRequest:[request generateRequest] fromData:bodyData progress:progress complete:result];
+}
+
+- (NSString *)requestWithUploadRequest:(NSURLRequest *)request fromData:(NSData *)bodyData progress:(void (^)(NSProgress *uploadProgress))progress complete:(KLNetworkResponseBlock)complete
+{
+    __block NSURLSessionUploadTask *task = nil;
+    task = [self.sessionManager uploadTaskWithRequest:request fromData:bodyData progress:progress completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+        [self.reqeustDictionary removeObjectForKey:@([task taskIdentifier])];
+        
+        /** ----- 自定义返回实体 ----- */
+        NSMutableDictionary *result = NSMutableDictionary.dictionary;
+        if (error == nil) {
+            NSMutableDictionary *dic = NSMutableDictionary.dictionary;
+            [dic setValue:response.URL.absoluteString forKey:@"uploadURL"];
+            [result setValue:@(200) forKey:@"code"];
+            [result setValue:dic forKey:@"data"];
+            [result setValue:@"Upload Success" forKey:@"message"];
+        } else {
+            [result setValue:@(error.code) forKey:@"code"];
+            [result setValue:error.domain forKey:@"message"];
+        }
+        NSData *data = [NSJSONSerialization dataWithJSONObject:result options:NSJSONWritingPrettyPrinted error:nil];
+        /** ----- 自定义返回实体 ----- */
+        
+        [self requestFinishedWithBlock:complete task:task data:data error:error];
+    }];
+    
+    NSString *requestId = [[NSString alloc] initWithFormat:@"%@", @([task taskIdentifier])];
+    self.reqeustDictionary[requestId] = task;
+    [task resume];
+    return requestId;
+}
+
+// MARK: - 🔥 Download Request
+- (NSString *_Nullable)sendRequest:(nonnull KLNetworkRequest *)request destination:(NSURL * (^)(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response))destination progress:(void (^)(NSProgress *downloadProgress))progress complete:(nonnull KLNetworkResponseBlock)result
+{
+    // 拦截器处理
+    if (![self needRequestInterceptor:request]) {
+        if (KLNetworkConfigure.shareInstance.enableDebug) NSLog(@"该请求已经取消");
+        return nil;
+    }
+    
+    [KLNetworkLogger logDebugInfoWithRequest:request];
+    return [self requestWithDownloadRequest:[request generateRequest] destination:destination progress:progress complete:result];
+}
+
+- (NSString *_Nullable)sendRequestWithConfigBlock:(nonnull RequestConfigBlock)requestBlock destination:(NSURL * (^)(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response))destination progress:(void (^)(NSProgress *downloadProgress))progress complete:(nonnull KLNetworkResponseBlock)result
+{
+    KLNetworkRequest *request = [[KLNetworkRequest alloc] init];
+    requestBlock(request);
+    // 拦截器处理
+    if (![self needRequestInterceptor:request]) {
+        if (KLNetworkConfigure.shareInstance.enableDebug) NSLog(@"该请求已经取消");
+        return nil;
+    }
+    
+    [KLNetworkLogger logDebugInfoWithRequest:request];
+    return [self requestWithDownloadRequest:[request generateRequest] destination:destination progress:progress complete:result];
+}
+
+// MARK: Download private method
+- (NSString *)requestWithDownloadRequest:(NSURLRequest *)request destination:(NSURL * (^)(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response))destination progress:(void (^)(NSProgress *downloadProgress))progress complete:(KLNetworkResponseBlock)complete
+{
+    __block NSURLSessionDownloadTask *task = nil;
+    task = [self.sessionManager downloadTaskWithRequest:request progress:progress destination:destination completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
+        [self.reqeustDictionary removeObjectForKey:@([task taskIdentifier])];
+        
+        /** ----- 自定义返回实体 ----- */
+        NSMutableDictionary *result = NSMutableDictionary.dictionary;
+        if (error == nil) {
+            NSMutableDictionary *dic = NSMutableDictionary.dictionary;
+            [dic setValue:response.URL.absoluteString forKey:@"downloadURL"];
+            [dic setValue:filePath.absoluteString forKey:@"filePath"];
+            [result setValue:@(200) forKey:@"code"];
+            [result setValue:dic forKey:@"data"];
+            [result setValue:@"Download Success" forKey:@"message"];
+        } else {
+            [result setValue:@(error.code) forKey:@"code"];
+            [result setValue:error.domain forKey:@"message"];
+        }
+        NSData *data = [NSJSONSerialization dataWithJSONObject:result options:NSJSONWritingPrettyPrinted error:nil];
+        /** ----- 自定义返回实体 ----- */
+        
+        [self requestFinishedWithBlock:complete task:task data:data error:error];
+    }];
+    
+    NSString *requestId = [[NSString alloc] initWithFormat:@"%@", @([task taskIdentifier])];
+    self.reqeustDictionary[requestId] = task;
+    [task resume];
+    return requestId;
+}
+
+
+// MARK: - 🔥 Cancle Request
+- (void)cancelRequestWithRequestID:(nonnull NSString *)requestID
+{
+    NSURLSessionDataTask *requestOperation = self.reqeustDictionary[requestID];
+    [requestOperation cancel];
+    [self.reqeustDictionary removeObjectForKey:requestID];
+}
+
+- (void)cancelRequestWithRequestIDList:(nonnull NSArray<NSString *> *)requestIDList
+{
+    for (NSString *requestId in requestIDList){
+        [self cancelRequestWithRequestID:requestId];
+    }
+}
+
+// MARK: - 🔥 Intercept Request
+- (BOOL)needRequestInterceptor:(KLNetworkRequest *)request
+{
     BOOL need = YES;
     for (id obj in self.requestInterceptorObjectArray) {
-        if ([obj respondsToSelector:@selector(needRequestWithRequest:)]){
+        if ([obj respondsToSelector:@selector(needRequestWithRequest:)]) {
             need = [obj needRequestWithRequest:request];
-            if (need)
-            {
+            if (need) {
                 break;
             }
         }

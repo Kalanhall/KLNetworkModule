@@ -32,7 +32,7 @@
 // MARK: 接口
 /** 添加公共请求参数 */
 + (void)addGeneralParameter:(NSString *)sKey value:(id)sValue {
-    KLNetworkConfigure *manager = [KLNetworkConfigure shareInstance];
+    KLNetworkConfigure *manager = KLNetworkConfigure.shareInstance;
     NSMutableDictionary *mDict = [[NSMutableDictionary alloc] init];
     mDict[sKey] = sValue;
     [mDict addEntriesFromDictionary:manager.generalParameters];
@@ -41,7 +41,7 @@
 
 /** 移除请求参数 */
 + (void)removeGeneralParameter:(NSString *)sKey {
-    KLNetworkConfigure *manager = [KLNetworkConfigure shareInstance];
+    KLNetworkConfigure *manager = KLNetworkConfigure.shareInstance;
     NSMutableDictionary *mDict = manager.generalParameters.mutableCopy;
     [mDict removeObjectForKey:sKey];
     manager.generalParameters = mDict.copy;

@@ -37,11 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 /** 重试次数，默认为 1 */
 @property (nonatomic, assign) UInt8 retryCount NS_UNAVAILABLE;
 
-/**
- 生成请求
- 
- @return NSURLRequest
- */
+/** 生成请求实体 @return 请求对象*/
 - (NSURLRequest *)generateRequest;
 
 @end

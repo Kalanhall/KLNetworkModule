@@ -14,17 +14,21 @@ NS_ASSUME_NONNULL_BEGIN
 /** 网络响应类 */
 @interface KLNetworkResponse : NSObject
 
+/** 服务器返回原始数据 */
 @property (nonatomic, copy  , readonly) NSData *rawData;
-@property (nonatomic, assign, readonly) KLNetworkResponseStatus status;
-/** 服务器返回数据，成功则为字典类型，失败则为字符串 */
+/** 服务器返回经处理的数据 */
 @property (nonatomic, copy  , readonly) id content;
 /** 便捷取值，content下如果有data字段 */
 @property (nonatomic, copy  , readonly) id data;
-/** 服务器返回消息 */
-@property (nonatomic, copy  , nonnull, readonly) NSString *message;
+/** 服务器返回状态 */
+@property (nonatomic, assign, readonly) KLNetworkResponseStatus status;
 /** 服务器返回状态码 */
 @property (nonatomic, assign, readonly) NSInteger statueCode;
+/** 服务器返回消息 */
+@property (nonatomic, copy  , readonly) NSString *message;
+/** 服务器返回请求ID */
 @property (nonatomic, copy  , readonly) NSString *requestId;
+/** 当前请求实体 */
 @property (nonatomic, copy  , readonly) NSURLRequest *request;
 
 - (nonnull instancetype)initWithRequestId:(nonnull NSNumber *)requestId

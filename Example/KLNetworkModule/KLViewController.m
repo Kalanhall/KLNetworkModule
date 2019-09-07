@@ -17,11 +17,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [KLNetworkConfigure shareInstance].generalServer = @"http://t.weather.sojson.com";
+    KLNetworkConfigure.shareInstance.generalServer = @"http://t.weather.sojson.com";
     [self sendBasicRequest];
 //    [self sendChainRequest];
 //    [self sendGroupRequest];
-    [KLNetworkConfigure shareInstance].enableDebug = YES;
+    KLNetworkConfigure.shareInstance.enableDebug = YES;
 }
 
 /**
