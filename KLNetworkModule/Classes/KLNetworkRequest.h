@@ -16,18 +16,22 @@ NS_ASSUME_NONNULL_BEGIN
 
 /** 请求 Base URL，优先级高于 generalServer，仅限于当前请求模型，请求后释放 */
 @property (nonatomic,   copy) NSString *baseURL;
-/** 请求路径 eg: /login2 */
+/** 请求路径 /service/todosoming */
 @property (nonatomic,   copy) NSString *requestURL;
 /** 请求头，默认为nil */
 @property (nonatomic, strong) NSDictionary *requestHeader;
-/** 参数加密类型，对加密参数字典的value进行加密 默认不加密 */
+/** 参数加密类型 默认不加密 */
 @property (nonatomic, assign) KLEncryptType encryptType;
-/** 请求参数，加密参数，未设置加密类型时与normalParams 混用 */
-@property (nonatomic, strong) NSDictionary <NSCoding> *encryptParams;
+/** 请求参数，加密参数 不指定加密类型时，同normalParams混用 */
+@property (nonatomic, strong) NSDictionary *encryptParams;
 /** 请求参数，不用加密 默认为nil */
-@property (nonatomic, strong) NSDictionary <NSCoding> *normalParams;
-/** 请求方式 默认为 Post */
+@property (nonatomic, strong) NSDictionary *normalParams;
+/** 请求方式 默认为 KLNetworkRequestTypePost */
 @property (nonatomic, assign) KLNetworkRequestType requestMethod;
+/** 请求内容类型 默认为 KLNetworkRequestTypePost */
+@property (nonatomic, assign) KLNetworkRequestContenType requestContenType;
+/** 请求方式 默认为 KLNetworkRequestSerializerHTTP */
+@property (nonatomic, assign) KLNetworkRequestSerializer requestSerializer;
 /** 请求方式string */
 @property (nonatomic,   copy) NSString *requestMethodName;
 /** 请求超时时间 默认 30s */

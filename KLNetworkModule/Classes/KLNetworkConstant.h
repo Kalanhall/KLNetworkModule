@@ -32,6 +32,18 @@ typedef NS_ENUM (NSUInteger, KLEncryptType){
     KLEncryptTypeMD5            // 32位加密&大写字母
 };
 
+typedef NS_ENUM (NSUInteger, KLNetworkRequestContenType){
+    KLNetworkRequestContenTypeFormURLEncoded = 0,
+    KLNetworkRequestContenTypeJSON           = 1,
+    KLNetworkRequestContenTypeFormData       = 2,
+    KLNetworkRequestContenTypeXML            = 3
+};
+
+typedef NS_ENUM (NSUInteger, KLNetworkRequestSerializer){
+    KLNetworkRequestSerializerHTTP  = 0,
+    KLNetworkRequestSerializerJSON  = 1
+};
+
 // 响应配置 Block
 typedef void (^KLNetworkResponseBlock)(KLNetworkResponse * _Nullable response);
 typedef void (^GroupResponseBlock)(NSArray<KLNetworkResponse *> * _Nullable responseObjects, BOOL isSuccess);

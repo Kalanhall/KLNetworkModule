@@ -19,8 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy  , nullable) NSDictionary <NSString *, NSString *> * (^generalDynamicParameters)(void);
 /** 静态公共请求头 */
 @property (nonatomic, strong, nullable) NSDictionary <NSString *, NSString *> *generalHeaders;
-/** 动态公共请求头 */
-@property (nonatomic, copy  , nullable) NSDictionary <NSString *, NSString *> * (^generalDynamicHeaders)(void);
+/** 动态公共请求头 parameters请求参数实体，参数用于加密依赖请求参数的需求*/
+@property (nonatomic, copy  , nullable) NSDictionary <NSString *, NSString *> *(^generalDynamicHeaders)(NSDictionary *parameters);
 /** 所有请求统一回调方法 */
 @property (nonatomic, copy  , nullable) void (^responseUnifiedCallBack)(_Nullable id response);
 /** 服务器地址 */

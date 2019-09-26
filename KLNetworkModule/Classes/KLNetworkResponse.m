@@ -11,13 +11,23 @@
 
 @interface KLNetworkResponse()
 
-@property (nonatomic, copy  ) NSData *rawData;
+/** 服务器返回状态 */
 @property (nonatomic, assign) KLNetworkResponseStatus status;
-@property (nonatomic, copy  ) id content;
+/** 服务器返回经处理的数据 */
+@property (nonatomic, copy  ) id JSONObject;
+/** 便捷取值，JSONObject下如果有data字段 */
 @property (nonatomic, copy  ) id data;
-@property (nonatomic, copy  , nonnull) NSString *message;
+/** 服务器返回原始数据 */
+@property (nonatomic, copy  ) NSData *rawData;
+/** 网络请求异常信息实体 */
+@property (nullable, nonatomic, copy) NSError *error;
+/** 服务器返回状态码 */
 @property (nonatomic, assign) NSInteger statueCode;
+/** 服务器返回消息 */
+@property (nonatomic, copy  ) NSString *message;
+/** 服务器返回请求ID */
 @property (nonatomic, copy  ) NSString *requestId;
+/** 当前请求实体 */
 @property (nonatomic, copy  ) NSURLRequest *request;
 
 @end
@@ -27,14 +37,34 @@
 - (nonnull instancetype)initWithRequestId:(nonnull NSNumber *)requestId
                                   request:(nonnull NSURLRequest *)request
                              responseData:(nullable NSData *)responseData
-                                   status:(KLNetworkResponseStatus)status
-{
+                                   status:(KLNetworkResponseStatus)status {
     self = [super init];
-    if (self) {
-        self.requestId = @([requestId unsignedIntegerValue]).stringValue;
+    if (self)
+    {
+        self.requestId = requestId.stringValue;
         self.request = request;
         self.rawData = responseData;
-        [self inspectionResponse:nil];
+        
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:NULL];
+        self.JSONObject = dic;
+        // 服务器返回字段不确定，根据实际情况进行调整
+        __block id value = nil;
+        [KLNetworkConfigure.shareInstance.respondeSuccessKeys enumerateObjectsUsingBlock:^(id  _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
+            value = [dic valueForKey:key];
+            if (value) *stop = YES;         // 命中即停止
+        }];
+        id code = value;
+        self.statueCode = [code integerValue];
+        
+        if (self.statueCode == KLNetworkConfigure.shareInstance.respondeSuccessCode.integerValue) {
+            self.status = KLNetworkResponseStatusSuccess;
+        } else {
+            self.status = KLNetworkResponseStatusError;
+        }
+        
+        if (KLNetworkConfigure.shareInstance.responseUnifiedCallBack) {
+            KLNetworkConfigure.shareInstance.responseUnifiedCallBack(self.JSONObject);
+        }
     }
     return self;
 }
@@ -42,60 +72,23 @@
 - (nonnull instancetype)initWithRequestId:(nonnull NSNumber *)requestId
                                   request:(nonnull NSURLRequest *)request
                              responseData:(nullable NSData *)responseData
-                                    error:(nullable NSError *)error
-{
+                                    error:(nullable NSError *)error {
     self = [super init];
-    if (self) {
-        self.requestId = @([requestId unsignedIntegerValue]).stringValue;
+    if (self)
+    {
+        self.status = KLNetworkResponseStatusError;
+        self.requestId = requestId.stringValue;
         self.request = request;
         self.rawData = responseData;
-        [self inspectionResponse:error];
+        self.JSONObject = error.localizedDescription;
+        self.statueCode = error.code;
+        self.error = error;
+        
+        if (KLNetworkConfigure.shareInstance.responseUnifiedCallBack) {
+            KLNetworkConfigure.shareInstance.responseUnifiedCallBack(error);
+        }
     }
     return self;
-}
-
-- (void)inspectionResponse:(NSError *)error
-{
-    if (error) {
-        self.status = KLNetworkResponseStatusError;
-        self.content = nil;
-        self.message = @"网络异常，请稍后再试";
-        self.statueCode = error.code;
-        return;
-    }
-    
-    self.content = [NSJSONSerialization JSONObjectWithData:self.rawData options:NSJSONReadingAllowFragments error:NULL];
-    __block id value = nil;
-    // MARK: 状态码获取
-    [KLNetworkConfigure.shareInstance.respondeSuccessKeys enumerateObjectsUsingBlock:^(id  _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
-        value = [self.content valueForKey:key];
-        if (value) *stop = YES;
-    }];
-    id code = value;
-    self.statueCode = [code integerValue];
-    
-    if (self.statueCode == KLNetworkConfigure.shareInstance.respondeSuccessCode.integerValue) {
-        // 默认200为业务处理成功标识码
-        self.status = KLNetworkResponseStatusSuccess;
-        [KLNetworkConfigure.shareInstance.respondeDataKeys enumerateObjectsUsingBlock:^(id  _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
-            value = [self.content valueForKey:key];
-            if (value) *stop = YES;
-        }];
-        self.data = value;
-        [KLNetworkConfigure.shareInstance.respondeMsgKeys enumerateObjectsUsingBlock:^(id  _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
-            value = [self.content valueForKey:key];
-            if (value) *stop = YES;
-        }];
-        self.message = value ? : @"No message";
-    } else {
-        // 其他业务异常码入口
-        self.status = KLNetworkResponseStatusError;
-        self.message =  @"Unknow Error";
-    }
-    
-    if (KLNetworkConfigure.shareInstance.responseUnifiedCallBack) {
-        KLNetworkConfigure.shareInstance.responseUnifiedCallBack(self.content);
-    }
 }
 
 @end

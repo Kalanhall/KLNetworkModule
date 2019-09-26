@@ -18,10 +18,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     KLNetworkConfigure.shareInstance.generalServer = @"http://t.weather.sojson.com";
-    [self sendBasicRequest];
-//    [self sendChainRequest];
-//    [self sendGroupRequest];
     KLNetworkConfigure.shareInstance.enableDebug = YES;
+}
+
+// TODO: 发送请求
+- (IBAction)sendRequest:(id)sender {
+        [self sendBasicRequest];
+    //    [self sendChainRequest];
+    //    [self sendGroupRequest];
 }
 
 /**
@@ -31,8 +35,9 @@
     KLNetworkRequest *request = [[KLNetworkRequest alloc] init];
     request.requestMethod = KLNetworkRequestTypeGet;
     request.requestURL = @"/api/weather/city/101030100";
-    request.encryptParams = @{@"encryptParams" : @[@"1", @"2"]};
-    request.normalParams = @{@"normalParams" : @"normalParams"};
+    request.normalParams = @{@"city" : @"101030100"};
+    request.encryptType = KLEncryptTypeBase64;
+    request.encryptParams = @{@"base64" : @[@"1", @"2"]};
     
     [KLNetworkModule.shareManager sendRequest:request complete:^(KLNetworkResponse * _Nullable response) {
         

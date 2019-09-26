@@ -84,44 +84,19 @@
 {
     __block NSURLSessionDataTask *task = nil;
     task = [self.sessionManager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+        if (error && [response isKindOfClass:NSHTTPURLResponse.class]) {
+            // 重写ERROR，重新code
+            NSHTTPURLResponse *rsp = (NSHTTPURLResponse *)response;
+            error = [NSError errorWithDomain:error.localizedDescription code:rsp.statusCode userInfo:error.userInfo];
+        }
         [self.reqeustDictionary removeObjectForKey:@([task taskIdentifier])];
-        NSData *responseData = responseObject;
-        [self requestFinishedWithBlock:complete task:task data:responseData error:error];
+        [self requestFinishedWithBlock:complete task:task data:responseObject error:error];
     }];
     
     NSString *requestId = [[NSString alloc] initWithFormat:@"%@", @([task taskIdentifier])];
     self.reqeustDictionary[requestId] = task;
     [task resume];
     return requestId;
-}
-
-- (void)requestFinishedWithBlock:(KLNetworkResponseBlock)blk task:(NSURLSessionTask *)task data:(NSData *)data error:(NSError *)error
-{
-    if (KLNetworkConfigure.shareInstance.enableDebug) [KLNetworkLogger logDebugInfoWithTask:task data:data error:error];
-    
-    if (error) {
-        KLNetworkResponse *rsp = [[KLNetworkResponse alloc] initWithRequestId:@([task taskIdentifier]) request:task.originalRequest responseData:data error:error];
-        for (id obj in self.responseInterceptorObjectArray)
-        {
-            if ([obj respondsToSelector:@selector(validatorResponse:)])
-            {
-                [obj validatorResponse:rsp];
-                break;
-            }
-        }
-        blk ? blk(rsp) : nil;
-    } else {
-        KLNetworkResponse *rsp = [[KLNetworkResponse alloc] initWithRequestId:@([task taskIdentifier]) request:task.originalRequest responseData:data status:KLNetworkResponseStatusSuccess];
-        for (id obj in self.responseInterceptorObjectArray)
-        {
-            if ([obj respondsToSelector:@selector(validatorResponse:)])
-            {
-                [obj validatorResponse:rsp];
-                break;
-            }
-        }
-        blk ? blk(rsp) : nil;
-    }
 }
 
 // MARK: - 🔥 Upload Request
@@ -136,7 +111,6 @@
     return [self requestWithUploadRequest:[request generateRequest] fromData:bodyData progress:progress complete:result];
 }
 
-// MARK: Upload private method
 - (NSString *_Nullable)sendRequestWithConfigBlock:(nonnull RequestConfigBlock)requestBlock fromData:(NSData *)bodyData progress:(void (^)(NSProgress *uploadProgress))progress complete:(nonnull KLNetworkResponseBlock)result
 {
     KLNetworkRequest *request = [[KLNetworkRequest alloc] init];
@@ -150,10 +124,18 @@
     return [self requestWithUploadRequest:[request generateRequest] fromData:bodyData progress:progress complete:result];
 }
 
+// MARK: Upload private method
+
 - (NSString *)requestWithUploadRequest:(NSURLRequest *)request fromData:(NSData *)bodyData progress:(void (^)(NSProgress *uploadProgress))progress complete:(KLNetworkResponseBlock)complete
 {
     __block NSURLSessionUploadTask *task = nil;
     task = [self.sessionManager uploadTaskWithRequest:request fromData:bodyData progress:progress completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+        if (error && [response isKindOfClass:NSHTTPURLResponse.class]) {
+            // 重写ERROR，重新code
+            NSHTTPURLResponse *rsp = (NSHTTPURLResponse *)response;
+            error = [NSError errorWithDomain:error.localizedDescription code:rsp.statusCode userInfo:error.userInfo];
+        }
+        
         [self.reqeustDictionary removeObjectForKey:@([task taskIdentifier])];
         
         /** ----- 自定义返回实体 ----- */
@@ -212,6 +194,12 @@
 {
     __block NSURLSessionDownloadTask *task = nil;
     task = [self.sessionManager downloadTaskWithRequest:request progress:progress destination:destination completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
+        if (error && [response isKindOfClass:NSHTTPURLResponse.class]) {
+            // 重写ERROR，重新code
+            NSHTTPURLResponse *rsp = (NSHTTPURLResponse *)response;
+            error = [NSError errorWithDomain:error.localizedDescription code:rsp.statusCode userInfo:error.userInfo];
+        }
+        
         [self.reqeustDictionary removeObjectForKey:@([task taskIdentifier])];
         
         /** ----- 自定义返回实体 ----- */
@@ -239,6 +227,35 @@
     return requestId;
 }
 
+// MARK: - 🔥 Finish Request
+- (void)requestFinishedWithBlock:(KLNetworkResponseBlock)blk task:(NSURLSessionTask *)task data:(NSData *)data error:(NSError *)error
+{
+    if (KLNetworkConfigure.shareInstance.enableDebug) [KLNetworkLogger logDebugInfoWithTask:task data:data error:error];
+    
+    if (error) {
+        KLNetworkResponse *rsp = [[KLNetworkResponse alloc] initWithRequestId:@([task taskIdentifier]) request:task.originalRequest responseData:data error:error];
+        for (id obj in self.responseInterceptorObjectArray)
+        {
+            if ([obj respondsToSelector:@selector(validatorResponse:)])
+            {
+                [obj validatorResponse:rsp];
+                break;
+            }
+        }
+        blk ? blk(rsp) : nil;
+    } else {
+        KLNetworkResponse *rsp = [[KLNetworkResponse alloc] initWithRequestId:@([task taskIdentifier]) request:task.originalRequest responseData:data status:KLNetworkResponseStatusSuccess];
+        for (id obj in self.responseInterceptorObjectArray)
+        {
+            if ([obj respondsToSelector:@selector(validatorResponse:)])
+            {
+                [obj validatorResponse:rsp];
+                break;
+            }
+        }
+        blk ? blk(rsp) : nil;
+    }
+}
 
 // MARK: - 🔥 Cancle Request
 - (void)cancelRequestWithRequestID:(nonnull NSString *)requestID

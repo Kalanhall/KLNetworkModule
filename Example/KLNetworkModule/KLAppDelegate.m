@@ -24,11 +24,11 @@
     };
     
     // 全局静态请求头参数设置
-    KLNetworkConfigure.shareInstance.generalHeaders = @{@"generalHeaders" : @"headers"};
+    KLNetworkConfigure.shareInstance.generalHeaders = @{@"Platform" : @"iOS"};
     
     // 全局动态请求头参数设置，token，用户信息等
-    KLNetworkConfigure.shareInstance.generalDynamicHeaders = ^NSDictionary<NSString *,NSString *> * _Nonnull{
-        return @{@"generalDynamicHeaders" : [NSString stringWithFormat:@"%@", @(arc4random_uniform(99))]};
+    KLNetworkConfigure.shareInstance.generalDynamicHeaders = ^NSDictionary<NSString *,NSString *> * _Nonnull(NSDictionary * _Nonnull parameters) {
+        return @{@"UserId" : [NSString stringWithFormat:@"%@", @(arc4random_uniform(9999999))]};
     };
     
     KLNetworkConfigure.shareInstance.responseUnifiedCallBack = ^(id _Nullable response) {
