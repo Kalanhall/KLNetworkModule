@@ -16,6 +16,9 @@
 
 @interface KLNetworkModule ()
 
+@property (nonatomic, strong) NSMutableDictionary *reqeustDictionary;
+@property (nonatomic, strong) AFHTTPSessionManager *sessionManager;
+
 @end
 
 @implementation KLNetworkModule
@@ -45,9 +48,9 @@
 {
     if (_sessionManager == nil){
         NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-        configuration.HTTPMaximumConnectionsPerHost = 4;
+        configuration.HTTPMaximumConnectionsPerHost = 10; // 同一IP最大并发数
         _sessionManager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:configuration];
-        _sessionManager.responseSerializer = [AFHTTPResponseSerializer serializer];
+        _sessionManager.responseSerializer = [AFHTTPResponseSerializer serializer]; // 返回二进制
         _sessionManager.securityPolicy.allowInvalidCertificates = YES;
         _sessionManager.securityPolicy.validatesDomainName = NO;
     }
@@ -79,7 +82,6 @@
     return [self requestWithRequest:[request generateRequest] complete:result];
 }
 
-// MARK: Nomal private method
 - (NSString *)requestWithRequest:(NSURLRequest *)request complete:(KLNetworkResponseBlock)complete
 {
     __block NSURLSessionDataTask *task = nil;
@@ -123,8 +125,6 @@
     [KLNetworkLogger logDebugInfoWithRequest:request];
     return [self requestWithUploadRequest:[request generateRequest] fromData:bodyData progress:progress complete:result];
 }
-
-// MARK: Upload private method
 
 - (NSString *)requestWithUploadRequest:(NSURLRequest *)request fromData:(NSData *)bodyData progress:(void (^)(NSProgress *uploadProgress))progress complete:(KLNetworkResponseBlock)complete
 {
@@ -189,7 +189,6 @@
     return [self requestWithDownloadRequest:[request generateRequest] destination:destination progress:progress complete:result];
 }
 
-// MARK: Download private method
 - (NSString *)requestWithDownloadRequest:(NSURLRequest *)request destination:(NSURL * (^)(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response))destination progress:(void (^)(NSProgress *downloadProgress))progress complete:(KLNetworkResponseBlock)complete
 {
     __block NSURLSessionDownloadTask *task = nil;

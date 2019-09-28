@@ -14,12 +14,12 @@
 
 @class KLNetworkResponse,KLNetworkRequest,KLNetworkGroupRequest,KLNetworkChainRequest;
 
-typedef NS_ENUM (NSUInteger, KLNetworkRequestType){
-    KLNetworkRequestTypeGet = 0,
-    KLNetworkRequestTypePost,
-    KLNetworkRequestTypePut,
-    KLNetworkRequestTypeDelete,
-    KLNetworkRequestTypePatch
+typedef NS_ENUM (NSUInteger, KLNetworkRequestMethod){
+    KLNetworkRequestMethodGET = 0,
+    KLNetworkRequestMethodPOST,
+    KLNetworkRequestMethodPUT,
+    KLNetworkRequestMethodDELETE,
+    KLNetworkRequestMethodPATCH
 };
 
 typedef NS_ENUM (NSUInteger, KLNetworkResponseStatus){
@@ -32,16 +32,11 @@ typedef NS_ENUM (NSUInteger, KLEncryptType){
     KLEncryptTypeMD5            // 32位加密&大写字母
 };
 
-typedef NS_ENUM (NSUInteger, KLNetworkRequestContenType){
-    KLNetworkRequestContenTypeFormURLEncoded = 0,
-    KLNetworkRequestContenTypeJSON           = 1,
-    KLNetworkRequestContenTypeFormData       = 2,
-    KLNetworkRequestContenTypeXML            = 3
-};
-
-typedef NS_ENUM (NSUInteger, KLNetworkRequestSerializer){
-    KLNetworkRequestSerializerHTTP  = 0,
-    KLNetworkRequestSerializerJSON  = 1
+typedef NS_ENUM (NSUInteger, KLNetworkContenType){
+    KLNetworkContenTypeFormURLEncoded = 0,
+    KLNetworkContenTypeJSON           = 1,
+    KLNetworkContenTypeFormData       = 2,
+    KLNetworkContenTypeXML            = 3
 };
 
 // 响应配置 Block

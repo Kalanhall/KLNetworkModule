@@ -14,32 +14,30 @@ NS_ASSUME_NONNULL_BEGIN
 /** 网络请求参数数据类 */
 @interface KLNetworkRequest : NSObject
 
-/** 请求 Base URL，优先级高于 generalServer，仅限于当前请求模型，请求后释放 */
+/** 请求 Base URL，优先级高于 generalServer */
 @property (nonatomic,   copy) NSString *baseURL;
 /** 请求路径 /service/todosoming */
-@property (nonatomic,   copy) NSString *requestURL;
+@property (nonatomic,   copy) NSString *path;
+
 /** 请求头，默认为nil */
-@property (nonatomic, strong) NSDictionary *requestHeader;
+@property (nonatomic, strong) NSDictionary *header;
+/** 请求参数，不用加密 默认为nil */
+@property (nonatomic, strong) NSDictionary *normalParams;
 /** 参数加密类型 默认不加密 */
 @property (nonatomic, assign) KLEncryptType encryptType;
 /** 请求参数，加密参数 不指定加密类型时，同normalParams混用 */
 @property (nonatomic, strong) NSDictionary *encryptParams;
-/** 请求参数，不用加密 默认为nil */
-@property (nonatomic, strong) NSDictionary *normalParams;
-/** 请求方式 默认为 KLNetworkRequestTypePost */
-@property (nonatomic, assign) KLNetworkRequestType requestMethod;
-/** 请求内容类型 默认为 KLNetworkRequestTypePost */
-@property (nonatomic, assign) KLNetworkRequestContenType requestContenType;
-/** 请求方式 默认为 KLNetworkRequestSerializerHTTP */
-@property (nonatomic, assign) KLNetworkRequestSerializer requestSerializer;
-/** 请求方式string */
-@property (nonatomic,   copy) NSString *requestMethodName;
+
+/** 请求方式 默认为 KLNetworkRequestMethodGET */
+@property (nonatomic, assign) KLNetworkRequestMethod method;
+/** 获取请求方式字符串名称 */
+@property (nonatomic,   copy, readonly) NSString *methodName;
+/** 请求内容类型 默认为 application/x-www-form-urlencoded / KLNetworkContenTypeFormURLEncoded  */
+@property (nonatomic, assign) KLNetworkContenType contenType;
 /** 请求超时时间 默认 30s */
-@property (nonatomic, assign) NSTimeInterval reqeustTimeoutInterval;
+@property (nonatomic, assign) NSTimeInterval timeoutInterval;
 /** api 版本号，默认 1.0 */
-@property (nonatomic,   copy) NSString *apiVersion;
-/** 重试次数，默认为 1 */
-@property (nonatomic, assign) UInt8 retryCount NS_UNAVAILABLE;
+@property (nonatomic,   copy) NSString *version;
 
 /** 生成请求实体 @return 请求对象*/
 - (NSURLRequest *)generateRequest;

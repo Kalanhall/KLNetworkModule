@@ -19,10 +19,8 @@
 {
     self = [super init];
     if (self) {
-        _requestMethod = KLNetworkRequestTypePost;
-        _reqeustTimeoutInterval = 30.0;
-        _apiVersion = @"1.0";
-        _retryCount = 1;
+        self.timeoutInterval = 30.0;
+        self.version = @"1.0";
     }
     return self;
 }
@@ -30,18 +28,14 @@
 /** 生成请求实体 @return 请求对象*/
 - (NSURLRequest *)generateRequest
 {
-    id serializer;
-    if (self.requestSerializer == KLNetworkRequestSerializerHTTP) {
-        serializer = [AFHTTPRequestSerializer serializer];
-    } else {
-        serializer = [AFJSONRequestSerializer serializer];
-    }
+    AFHTTPRequestSerializer *serializer = [AFHTTPRequestSerializer serializer];
     [serializer willChangeValueForKey:@"timeoutInterval"];
-    [serializer setTimeoutInterval:[self reqeustTimeoutInterval]];
+    [serializer setTimeoutInterval:self.timeoutInterval];
     [serializer didChangeValueForKey:@"timeoutInterval"];
     [serializer setCachePolicy:NSURLRequestUseProtocolCachePolicy];
+    
     NSDictionary *parameters = [self generateRequestBody];
-    NSString *urlString = [self.baseURL stringByAppendingString:self.requestURL];
+    NSString *urlString = [self.baseURL stringByAppendingString:self.path];
     NSMutableURLRequest *request = [serializer requestWithMethod:[self httpMethod] URLString:urlString parameters:parameters error:NULL];
     // 请求头
     NSMutableDictionary *header = request.allHTTPHeaderFields.mutableCopy;
@@ -51,7 +45,7 @@
     // ContenType
     [header setValue:self.httpContenType forKey:@"Content-Type"];
     // 请求时插入的请求头
-    [header addEntriesFromDictionary:self.requestHeader];
+    [header addEntriesFromDictionary:self.header];
     // 静态公共请求头
     [header addEntriesFromDictionary:KLNetworkConfigure.shareInstance.generalHeaders];
     // 动态公共请求头
@@ -110,17 +104,17 @@
 
 - (NSString *)httpMethod
 {
-    KLNetworkRequestType type = [self requestMethod];
+    KLNetworkRequestMethod type = [self method];
     switch (type) {
-        case KLNetworkRequestTypePost:
-            return @"POST";
-        case KLNetworkRequestTypeGet:
+        case KLNetworkRequestMethodGET:
             return @"GET";
-        case KLNetworkRequestTypePut:
+        case KLNetworkRequestMethodPOST:
+            return @"POST";
+        case KLNetworkRequestMethodPUT:
             return @"PUT";
-        case KLNetworkRequestTypeDelete:
+        case KLNetworkRequestMethodDELETE:
             return @"DELETE";
-        case KLNetworkRequestTypePatch:
+        case KLNetworkRequestMethodPATCH:
             return @"PATCH";
         default:
             break;
@@ -129,26 +123,23 @@
 }
 
 - (NSString *)httpContenType {
-    switch (self.requestContenType) {
-        case KLNetworkRequestContenTypeFormURLEncoded:
+    switch (self.contenType) {
+        case KLNetworkContenTypeFormURLEncoded:
             return @"application/x-www-form-urlencoded";
-        case KLNetworkRequestContenTypeJSON:
+        case KLNetworkContenTypeJSON:
             return @"application/json";
-        case KLNetworkRequestContenTypeFormData:
+        case KLNetworkContenTypeFormData:
             return @"multipart/form-data";
-        case KLNetworkRequestContenTypeXML:
+        case KLNetworkContenTypeXML:
             return @"application/xml";
         default:
             break;
     }
 }
 
-- (NSString *)requestMethodName
+- (NSString *)methodName
 {
-    if (_requestMethodName == nil) {
-        return [self httpMethod];
-    }
-    return _requestMethodName;
+    return [self httpMethod];
 }
 
 - (NSString *)baseURL

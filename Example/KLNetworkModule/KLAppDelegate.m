@@ -16,12 +16,12 @@
     // Override point for customization after application launch.
     
     // 全局静态公参
-    KLNetworkConfigure.shareInstance.generalParameters = @{@"generalParameters" : @"parameters"};
+//    KLNetworkConfigure.shareInstance.generalParameters = @{@"generalParameters" : @"parameters"};
     
     // 全局动态公参
-    KLNetworkConfigure.shareInstance.generalDynamicParameters = ^NSDictionary<NSString *,id> * _Nonnull{
-        return @{@"generalDynamicParameters" : [NSString stringWithFormat:@"%@", @(arc4random_uniform(99))]};
-    };
+//    KLNetworkConfigure.shareInstance.generalDynamicParameters = ^NSDictionary<NSString *,id> * _Nonnull{
+//        return @{@"generalDynamicParameters" : [NSString stringWithFormat:@"%@", @(arc4random_uniform(99))]};
+//    };
     
     // 全局静态请求头参数设置
     KLNetworkConfigure.shareInstance.generalHeaders = @{@"Platform" : @"iOS"};

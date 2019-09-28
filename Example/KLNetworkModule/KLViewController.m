@@ -33,8 +33,9 @@
  */
 - (void)sendBasicRequest {
     KLNetworkRequest *request = [[KLNetworkRequest alloc] init];
-    request.requestMethod = KLNetworkRequestTypeGet;
-    request.requestURL = @"/api/weather/city/101030100";
+    request.contenType = KLNetworkContenTypeJSON;
+    request.method = KLNetworkRequestMethodGET;
+    request.path = @"/api/weather/city/101030100";
     request.normalParams = @{@"city" : @"101030100"};
     request.encryptType = KLEncryptTypeBase64;
     request.encryptParams = @{@"base64" : @[@"1", @"2"]};
@@ -44,9 +45,9 @@
     }];
     
     //    [KLNetworkModule.shareManager sendRequestWithConfigBlock:^(KLNetworkRequest * _Nullable request) {
-    //        request.requestURL = @"/api/weather/city/101030100";
+    //        request.path = @"/api/weather/city/101030100";
     //        request.normalParams = @{};
-    //        request.requestMethod = KLNetworkRequestTypeGet;
+    //        request.method = KLNetworkRequestMethodGet;
     //    } complete:^(KLNetworkResponse * _Nullable response) {
     //        if (response.status == KLNetworkResponseStatusSuccess) {
     //
@@ -60,14 +61,14 @@
 - (void)sendChainRequest {
     [KLNetworkModule.shareManager sendChainRequest:^(KLNetworkChainRequest * _Nullable chainRequest) {
         [chainRequest onFirst:^(KLNetworkRequest * _Nullable request) {
-            request.requestURL = @"/api/weather/city/101030100";
-            request.requestMethod = KLNetworkRequestTypeGet;
+            request.path = @"/api/weather/city/101030100";
+            request.method = KLNetworkRequestMethodGET;
         }];
         
         [chainRequest onNext:^(KLNetworkRequest * _Nullable request, KLNetworkResponse * _Nullable responseObject, BOOL * _Nullable isSent) {
             request.baseURL = @"http://api.map.baidu.com";
-            request.requestURL = @"/location/ip?ak=9zNKGguAbdNC6xwD7syftt533eIf7cSn&callback=showLocation";
-            request.requestMethod = KLNetworkRequestTypeGet;
+            request.path = @"/location/ip?ak=9zNKGguAbdNC6xwD7syftt533eIf7cSn&callback=showLocation";
+            request.method = KLNetworkRequestMethodGET;
         }];
         
     } complete:^(NSArray<KLNetworkResponse *> * _Nullable responseObjects, BOOL isSuccess) {
@@ -80,8 +81,8 @@
         for (NSInteger i = 0; i < 3; i ++) {
             KLNetworkRequest *request = [[KLNetworkRequest alloc] init];
             request.baseURL = @"http://api.map.baidu.com";
-            request.requestURL = @"/location/ip?ak=9zNKGguAbdNC6xwD7syftt533eIf7cSn&callback=showLocation";
-            request.requestMethod = KLNetworkRequestTypePost;
+            request.path = @"/location/ip?ak=9zNKGguAbdNC6xwD7syftt533eIf7cSn&callback=showLocation";
+            request.method = KLNetworkRequestMethodPOST;
             request.normalParams = @{@"normalParams" : @"normalParams"};
             request.encryptParams = @{@"encryptParams" : @[@"1", @"2"]};
             request.encryptType = KLEncryptTypeMD5;
