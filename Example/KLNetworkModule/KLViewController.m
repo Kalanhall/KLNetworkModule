@@ -39,20 +39,10 @@
     request.normalParams = @{@"city" : @"101030100"};
     request.encryptType = KLEncryptTypeBase64;
     request.encryptParams = @{@"base64" : @[@"1", @"2"]};
-    
+
     [KLNetworkModule.shareManager sendRequest:request complete:^(KLNetworkResponse * _Nullable response) {
-        
+
     }];
-    
-    //    [KLNetworkModule.shareManager sendRequestWithConfigBlock:^(KLNetworkRequest * _Nullable request) {
-    //        request.path = @"/api/weather/city/101030100";
-    //        request.normalParams = @{};
-    //        request.method = KLNetworkRequestMethodGet;
-    //    } complete:^(KLNetworkResponse * _Nullable response) {
-    //        if (response.status == KLNetworkResponseStatusSuccess) {
-    //
-    //        }
-    //    }];
 }
 
 /**

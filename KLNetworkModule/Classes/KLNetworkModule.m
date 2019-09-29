@@ -50,7 +50,7 @@
         NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
         configuration.HTTPMaximumConnectionsPerHost = 10; // 同一IP最大并发数
         _sessionManager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:configuration];
-        _sessionManager.responseSerializer = [AFHTTPResponseSerializer serializer]; // 返回二进制
+        _sessionManager.responseSerializer = AFHTTPResponseSerializer.serializer; // 返回二进制，不可变更，返回值处理逻辑都是基于byte处理的
         _sessionManager.securityPolicy.allowInvalidCertificates = YES;
         _sessionManager.securityPolicy.validatesDomainName = NO;
     }
