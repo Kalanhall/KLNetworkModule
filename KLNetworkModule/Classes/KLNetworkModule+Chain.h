@@ -12,8 +12,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface KLNetworkModule (Chain)
 
+// 不适用上传/下载请求
 - (NSString *)sendChainRequest:(nullable ChainRequestConfigBlock)configBlock
                       complete:(nullable GroupResponseBlock)completeBlock;
+
+//- (NSString *)sendUploadChainRequest:(ChainRequestConfigBlock)configBlock progress:(void (^)(NSProgress *uploadProgress))progress complete:(GroupResponseBlock)completeBlock;
 
 - (void)cancelChainRequest:(NSString *)taskID;
 

@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface KLNetworkModule (Group)
 
+// 不适用上传/下载请求
 - (NSString *_Nullable)sendGroupRequest:(nullable GroupRequestConfigBlock)configBlock
                       complete:(nullable GroupResponseBlock)completeBlock;
 

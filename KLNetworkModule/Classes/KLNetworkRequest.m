@@ -20,7 +20,8 @@
     self = [super init];
     if (self) {
         self.timeoutInterval = 30.0;
-        self.version = @"1.0.0";
+        self.version = @"1.0.0";    // API版本
+        self.path = @"";            // NONULL
     }
     return self;
 }
@@ -37,7 +38,7 @@
     [serializer setCachePolicy:NSURLRequestUseProtocolCachePolicy];
     
     NSDictionary *parameters = [self generateRequestBody];
-    NSString *urlString = [self.baseURL stringByAppendingString:self.path];
+    NSString *urlString = [self.baseURL stringByAppendingPathComponent:self.path];
     NSMutableURLRequest *request = [serializer requestWithMethod:[self httpMethod] URLString:urlString parameters:parameters error:NULL];
     // 请求头
     NSMutableDictionary *header = request.allHTTPHeaderFields.mutableCopy;

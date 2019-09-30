@@ -24,7 +24,7 @@
 // TODO: 发送请求
 - (IBAction)sendRequest:(id)sender {
         [self sendBasicRequest];
-    //    [self sendChainRequest];
+//        [self sendChainRequest];
     //    [self sendGroupRequest];
 }
 
@@ -35,8 +35,6 @@
     KLNetworkRequest *request = [[KLNetworkRequest alloc] init];
     request.path = @"/api/weather/city/101030100";
     request.normalParams = @{@"city" : @"101030100"};
-    request.encryptType = KLEncryptTypeBase64;
-    request.encryptParams = @{@"base64" : @[@"1", @"2"]};
     [KLNetworkModule.shareManager sendRequest:request complete:^(KLNetworkResponse * _Nullable response) {
 
     }];
@@ -60,13 +58,12 @@
     [KLNetworkModule.shareManager sendChainRequest:^(KLNetworkChainRequest * _Nullable chainRequest) {
         [chainRequest onFirst:^(KLNetworkRequest * _Nullable request) {
             request.path = @"/api/weather/city/101030100";
-            request.method = KLNetworkRequestMethodGET;
+            request.normalParams = @{@"city" : @"101030100"};
         }];
         
         [chainRequest onNext:^(KLNetworkRequest * _Nullable request, KLNetworkResponse * _Nullable responseObject, BOOL * _Nullable isSent) {
-            request.baseURL = @"http://api.map.baidu.com";
-            request.path = @"/location/ip?ak=9zNKGguAbdNC6xwD7syftt533eIf7cSn&callback=showLocation";
-            request.method = KLNetworkRequestMethodGET;
+            request.path = @"/api/weather/city/101030100";
+            request.normalParams = @{@"city" : @"101030100"};
         }];
         
     } complete:^(NSArray<KLNetworkResponse *> * _Nullable responseObjects, BOOL isSuccess) {

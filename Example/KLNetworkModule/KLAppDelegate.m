@@ -16,7 +16,7 @@
     // Override point for customization after application launch.
     
     // 全局静态公参
-    KLNetworkConfigure.shareInstance.generalParameters = @{@"uuid" : @"66005943094E4AB128501DFA3596591C"};
+//    KLNetworkConfigure.shareInstance.generalParameters = @{@"uuid" : @"1CB2134B7439A8A05C44D2E78CBFD3DE"};
     
     // 全局动态公参
     KLNetworkConfigure.shareInstance.generalDynamicParameters = ^NSDictionary<NSString *,id> * _Nonnull{
@@ -24,12 +24,12 @@
     };
     
     // 全局静态请求头参数设置
-    KLNetworkConfigure.shareInstance.generalHeaders = @{@"Platform" : @"iOS"};
+    KLNetworkConfigure.shareInstance.generalHeaders = @{@"Platform" : @"iOS", @"uuid" : @"1CB2134B7439A8A05C44D2E78CBFD3DE"};
     
     // 全局动态请求头参数设置，token，用户信息等
     KLNetworkConfigure.shareInstance.generalDynamicHeaders = ^NSDictionary<NSString *,NSString *> * _Nonnull(NSDictionary * _Nonnull parameters) {
-        return @{@"token" : @"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.zBRVlD1DhtWBX/UUGjfiCQ==.eyJleHAiOjE1Njk4MDU4MDc1MTksInBheWxvYWQiOiJcIjMyODU1XzE1Njk4MDU4MDc1MTlcIiJ9.yCmqY58z2MZnIEBDkNH9-mTSlJAyODhza2ZQZYCyoP0",
-                 @"sign" : @"7271EE714C9D01D8EE5D61A8CB31AABB"
+        return @{@"token" : @"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.K4IenxWMAWd+9SPsuSPmGw==.eyJleHAiOjE1Njk4MjQxMDYxMTAsInBheWxvYWQiOiJcIjMyODU1XzE1Njk4MjQxMDYxMTBcIiJ9.oZzISkcZFRL1X81OQzZSou5gy1okMaT6TUsNkYJFRVY",
+                 @"sign" : @"2BE0EB601F039ED7EE9ED472787F1DD4"
         };
     };
     

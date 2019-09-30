@@ -33,13 +33,13 @@
         }
         
         NSString *uuid = [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""];
-        [self __sendChainRequst:chainRequest uuid:uuid];
+        [self sendChainRequst:chainRequest uuid:uuid];
         return uuid;
     }
     return nil;
 }
 
-- (void)__sendChainRequst:(KLNetworkChainRequest *)chainRequest uuid:(NSString *)uuid {
+- (void)sendChainRequst:(KLNetworkChainRequest *)chainRequest uuid:(NSString *)uuid {
     if (chainRequest.runningRequest != nil) {
         if (![self chainRequestDictionary]) {
             [self setChainRequestDictionary:[[NSMutableDictionary alloc] init]];
@@ -51,13 +51,46 @@
                                         if ([chainRequest onFinishedOneRequest:chainRequest.runningRequest response:response]) {
                                         } else {
                                             if (chainRequest.runningRequest != nil) {
-                                                [strongSelf __sendChainRequst:chainRequest uuid:uuid];
+                                                [strongSelf sendChainRequst:chainRequest uuid:uuid];
                                             }
                                         }
                                     }];
         [self chainRequestDictionary][uuid] = taskID;
     }
 }
+
+//- (NSString *)sendUploadChainRequest:(ChainRequestConfigBlock)configBlock progress:(void (^)(NSProgress *uploadProgress))progress complete:(GroupResponseBlock)completeBlock {
+//    KLNetworkChainRequest *chainRequest = [[KLNetworkChainRequest alloc] init];
+//    if (configBlock) {
+//        configBlock(chainRequest);
+//    }
+//    
+//    if (chainRequest.runningRequest) {
+//        if (completeBlock) {
+//            [chainRequest setValue:completeBlock forKey:@"_completeBlock"];
+//        }
+//        
+//        NSString *uuid = [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""];
+//        [self sendUploadChainRequst:chainRequest uuid:uuid];
+//        return uuid;
+//    }
+//    return nil;
+//}
+//
+//- (void)sendUploadChainRequst:(KLNetworkChainRequest *)chainRequest uuid:(NSString *)uuid {
+//    if (chainRequest.runningRequest != nil) {
+//        if (![self chainRequestDictionary]) {
+//            [self setChainRequestDictionary:[[NSMutableDictionary alloc] init]];
+//        }
+//        __weak __typeof(self) weakSelf = self;
+//        NSString *taskID = [self sendUploadRequest:chainRequest.runningRequest fromData:nil progress:^(NSProgress * _Nonnull uploadProgress) {
+//            
+//        } complete:^(KLNetworkResponse * _Nullable response) {
+//            
+//        }];
+//        [self chainRequestDictionary][uuid] = taskID;
+//    }
+//}
 
 - (void)cancelChainRequest:(NSString *)taskID {
     // 根据 Chain id 找到 taskid

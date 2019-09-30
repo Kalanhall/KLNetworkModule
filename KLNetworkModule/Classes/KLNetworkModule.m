@@ -102,7 +102,7 @@
 }
 
 // MARK: - 🔥 Upload Request
-- (NSString *_Nullable)sendRequest:(nonnull KLNetworkRequest *)request fromData:(NSData *)bodyData progress:(void (^)(NSProgress *uploadProgress))progress complete:(nonnull KLNetworkResponseBlock)result
+- (NSString *_Nullable)sendUploadRequest:(nonnull KLNetworkRequest *)request fromData:(NSData *)bodyData progress:(void (^)(NSProgress *uploadProgress))progress complete:(nonnull KLNetworkResponseBlock)result
 {
     // 拦截器处理
     if (![self needRequestInterceptor:request]) {
@@ -113,7 +113,7 @@
     return [self requestWithUploadRequest:[request generateRequest] fromData:bodyData progress:progress complete:result];
 }
 
-- (NSString *_Nullable)sendRequestWithConfigBlock:(nonnull RequestConfigBlock)requestBlock fromData:(NSData *)bodyData progress:(void (^)(NSProgress *uploadProgress))progress complete:(nonnull KLNetworkResponseBlock)result
+- (NSString *_Nullable)sendUploadRequestWithConfigBlock:(nonnull RequestConfigBlock)requestBlock fromData:(NSData *)bodyData progress:(void (^)(NSProgress *uploadProgress))progress complete:(nonnull KLNetworkResponseBlock)result
 {
     KLNetworkRequest *request = [[KLNetworkRequest alloc] init];
     requestBlock(request);
@@ -163,7 +163,7 @@
 }
 
 // MARK: - 🔥 Download Request
-- (NSString *_Nullable)sendRequest:(nonnull KLNetworkRequest *)request destination:(NSURL * (^)(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response))destination progress:(void (^)(NSProgress *downloadProgress))progress complete:(nonnull KLNetworkResponseBlock)result
+- (NSString *_Nullable)sendDownloadRequest:(nonnull KLNetworkRequest *)request destination:(NSURL * (^)(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response))destination progress:(void (^)(NSProgress *downloadProgress))progress complete:(nonnull KLNetworkResponseBlock)result
 {
     // 拦截器处理
     if (![self needRequestInterceptor:request]) {
@@ -175,7 +175,7 @@
     return [self requestWithDownloadRequest:[request generateRequest] destination:destination progress:progress complete:result];
 }
 
-- (NSString *_Nullable)sendRequestWithConfigBlock:(nonnull RequestConfigBlock)requestBlock destination:(NSURL * (^)(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response))destination progress:(void (^)(NSProgress *downloadProgress))progress complete:(nonnull KLNetworkResponseBlock)result
+- (NSString *_Nullable)sendDownloadRequestWithConfigBlock:(nonnull RequestConfigBlock)requestBlock destination:(NSURL * (^)(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response))destination progress:(void (^)(NSProgress *downloadProgress))progress complete:(nonnull KLNetworkResponseBlock)result
 {
     KLNetworkRequest *request = [[KLNetworkRequest alloc] init];
     requestBlock(request);

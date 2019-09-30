@@ -56,6 +56,20 @@
         id code = value;
         self.statueCode = [code integerValue];
         
+        value = nil;
+        [KLNetworkConfigure.shareInstance.respondeDataKeys enumerateObjectsUsingBlock:^(id  _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
+            value = [dic valueForKey:key];
+            if (value) *stop = YES;         // 命中即停止
+        }];
+        self.data = value;
+        
+        value = nil;
+        [KLNetworkConfigure.shareInstance.respondeMsgKeys enumerateObjectsUsingBlock:^(id  _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
+            value = [dic valueForKey:key];
+            if (value) *stop = YES;         // 命中即停止
+        }];
+        self.message = value;
+        
         if (self.statueCode == KLNetworkConfigure.shareInstance.respondeSuccessCode.integerValue) {
             self.status = KLNetworkResponseStatusSuccess;
         } else {

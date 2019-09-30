@@ -49,7 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param     result                  响应结果
  @return    该请求对应的唯一 task id
  */
-- (NSString *_Nullable)sendRequest:(nonnull KLNetworkRequest *)request fromData:(NSData *)bodyData progress:(void (^)(NSProgress *uploadProgress))progress complete:(nonnull KLNetworkResponseBlock)result;
+- (NSString *_Nullable)sendUploadRequest:(nonnull KLNetworkRequest *)request fromData:(NSData *)bodyData progress:(void (^)(NSProgress *uploadProgress))progress complete:(nonnull KLNetworkResponseBlock)result;
 
 /**
  @abstract  上传请求
@@ -59,7 +59,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param     result                 响应结果
  @return    该请求对应的唯一 task id
  */
-- (NSString *_Nullable)sendRequestWithConfigBlock:(nonnull RequestConfigBlock)requestBlock fromData:(NSData *)bodyData progress:(void (^)(NSProgress *uploadProgress))progress complete:(nonnull KLNetworkResponseBlock)result;
+- (NSString *_Nullable)sendUploadRequestWithConfigBlock:(nonnull RequestConfigBlock)requestBlock fromData:(NSData *)bodyData progress:(void (^)(NSProgress *uploadProgress))progress complete:(nonnull KLNetworkResponseBlock)result;
 
 // MARK: - Download Request
 /**
@@ -70,7 +70,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param     progress           下载进度回调
  @return    该请求对应的唯一 task id
  */
-- (NSString *_Nullable)sendRequest:(nonnull KLNetworkRequest *)request destination:(NSURL * (^)(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response))destination progress:(void (^)(NSProgress *downloadProgress))progress complete:(nonnull KLNetworkResponseBlock)result;
+- (NSString *_Nullable)sendDownloadRequest:(nonnull KLNetworkRequest *)request destination:(NSURL * (^)(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response))destination progress:(void (^)(NSProgress *downloadProgress))progress complete:(nonnull KLNetworkResponseBlock)result;
 
 /**
  @abstract  下载请求
@@ -80,7 +80,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param     progress             下载进度回调
  @return    该请求对应的唯一 task id
  */
-- (NSString *_Nullable)sendRequestWithConfigBlock:(nonnull RequestConfigBlock)requestBlock destination:(NSURL * (^)(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response))destination progress:(void (^)(NSProgress *downloadProgress))progress complete:(nonnull KLNetworkResponseBlock)result;
+- (NSString *_Nullable)sendDownloadRequestWithConfigBlock:(nonnull RequestConfigBlock)requestBlock destination:(NSURL * (^)(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response))destination progress:(void (^)(NSProgress *downloadProgress))progress complete:(nonnull KLNetworkResponseBlock)result;
 
 // MARK: - Cancle Request
 /**
