@@ -16,19 +16,21 @@
     // Override point for customization after application launch.
     
     // 全局静态公参
-//    KLNetworkConfigure.shareInstance.generalParameters = @{@"generalParameters" : @"parameters"};
+    KLNetworkConfigure.shareInstance.generalParameters = @{@"uuid" : @"66005943094E4AB128501DFA3596591C"};
     
     // 全局动态公参
-//    KLNetworkConfigure.shareInstance.generalDynamicParameters = ^NSDictionary<NSString *,id> * _Nonnull{
-//        return @{@"generalDynamicParameters" : [NSString stringWithFormat:@"%@", @(arc4random_uniform(99))]};
-//    };
+    KLNetworkConfigure.shareInstance.generalDynamicParameters = ^NSDictionary<NSString *,id> * _Nonnull{
+        return @{@"userId" : @"32855", @"userTypeId" : @"44bd15964b49474c94a6c5979c8e3318"};
+    };
     
     // 全局静态请求头参数设置
     KLNetworkConfigure.shareInstance.generalHeaders = @{@"Platform" : @"iOS"};
     
     // 全局动态请求头参数设置，token，用户信息等
     KLNetworkConfigure.shareInstance.generalDynamicHeaders = ^NSDictionary<NSString *,NSString *> * _Nonnull(NSDictionary * _Nonnull parameters) {
-        return @{@"UserId" : [NSString stringWithFormat:@"%@", @(arc4random_uniform(9999999))]};
+        return @{@"token" : @"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.zBRVlD1DhtWBX/UUGjfiCQ==.eyJleHAiOjE1Njk4MDU4MDc1MTksInBheWxvYWQiOiJcIjMyODU1XzE1Njk4MDU4MDc1MTlcIiJ9.yCmqY58z2MZnIEBDkNH9-mTSlJAyODhza2ZQZYCyoP0",
+                 @"sign" : @"7271EE714C9D01D8EE5D61A8CB31AABB"
+        };
     };
     
     KLNetworkConfigure.shareInstance.responseUnifiedCallBack = ^(id _Nullable response) {

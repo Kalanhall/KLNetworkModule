@@ -33,16 +33,24 @@
  */
 - (void)sendBasicRequest {
     KLNetworkRequest *request = [[KLNetworkRequest alloc] init];
-    request.contenType = KLNetworkContenTypeJSON;
-    request.method = KLNetworkRequestMethodGET;
     request.path = @"/api/weather/city/101030100";
     request.normalParams = @{@"city" : @"101030100"};
     request.encryptType = KLEncryptTypeBase64;
     request.encryptParams = @{@"base64" : @[@"1", @"2"]};
-
     [KLNetworkModule.shareManager sendRequest:request complete:^(KLNetworkResponse * _Nullable response) {
 
     }];
+    
+//    [KLNetworkModule.shareManager sendRequestWithConfigBlock:^(KLNetworkRequest * _Nullable request) {
+//        request.method = KLNetworkRequestMethodPOST;
+//        request.serializerType = KLNetworkSerializerTypeJSON;
+//        request.contenType = KLNetworkContenTypeJSON;
+//        request.baseURL = @"http://ec2-52-83-156-42.cn-northwest-1.compute.amazonaws.com.cn:30001";
+//        request.path = @"/app/gateway/30088/iot/video/likeCommand";
+//        request.normalParams = @{@"commandType" : @(1), @"videoId" : @"11756866726150061209"};
+//    } complete:^(KLNetworkResponse * _Nullable response) {
+//
+//    }];
 }
 
 /**

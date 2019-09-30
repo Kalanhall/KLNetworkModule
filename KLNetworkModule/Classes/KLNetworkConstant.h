@@ -39,6 +39,12 @@ typedef NS_ENUM (NSUInteger, KLNetworkContenType){
     KLNetworkContenTypeXML            = 3
 };
 
+typedef NS_ENUM (NSUInteger, KLNetworkSerializerType){
+    KLNetworkSerializerTypeHTTP         = 0,
+    KLNetworkSerializerTypeJSON         = 1,
+    KLNetworkSerializerTypePropertyList = 2
+};
+
 // 响应配置 Block
 typedef void (^KLNetworkResponseBlock)(KLNetworkResponse * _Nullable response);
 typedef void (^GroupResponseBlock)(NSArray<KLNetworkResponse *> * _Nullable responseObjects, BOOL isSuccess);

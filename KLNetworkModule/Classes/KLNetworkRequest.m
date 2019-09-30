@@ -20,7 +20,7 @@
     self = [super init];
     if (self) {
         self.timeoutInterval = 30.0;
-        self.version = @"1.0";
+        self.version = @"1.0.0";
     }
     return self;
 }
@@ -28,10 +28,12 @@
 /** 生成请求实体 @return 请求对象*/
 - (NSURLRequest *)generateRequest
 {
-    AFHTTPRequestSerializer *serializer = [AFHTTPRequestSerializer serializer];
+    AFHTTPRequestSerializer *serializer = [self httpRequestSerializer];
+    // 变更超时设置
     [serializer willChangeValueForKey:@"timeoutInterval"];
     [serializer setTimeoutInterval:self.timeoutInterval];
     [serializer didChangeValueForKey:@"timeoutInterval"];
+    // 默认缓存策略
     [serializer setCachePolicy:NSURLRequestUseProtocolCachePolicy];
     
     NSDictionary *parameters = [self generateRequestBody];
@@ -39,9 +41,7 @@
     NSMutableURLRequest *request = [serializer requestWithMethod:[self httpMethod] URLString:urlString parameters:parameters error:NULL];
     // 请求头
     NSMutableDictionary *header = request.allHTTPHeaderFields.mutableCopy;
-    if (!header) {
-        header = [[NSMutableDictionary alloc] init];
-    }
+    if (header == nil) header = [[NSMutableDictionary alloc] init];
     // ContenType
     [header setValue:self.httpContenType forKey:@"Content-Type"];
     // 请求时插入的请求头
@@ -135,6 +135,21 @@
         default:
             break;
     }
+    return @"application/x-www-form-urlencoded";
+}
+
+- (AFHTTPRequestSerializer *)httpRequestSerializer {
+    switch (self.serializerType) {
+        case KLNetworkSerializerTypeHTTP:
+            return AFHTTPRequestSerializer.serializer;
+        case KLNetworkSerializerTypeJSON:
+            return AFJSONRequestSerializer.serializer;
+        case KLNetworkSerializerTypePropertyList:
+            return AFPropertyListRequestSerializer.serializer;
+        default:
+            break;
+    }
+    return AFHTTPRequestSerializer.serializer;
 }
 
 - (NSString *)methodName

@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 /** 请求路径 /service/todosoming */
 @property (nonatomic,   copy) NSString *path;
 
-/** 请求头，默认为nil */
+/** 请求头信息，默认为nil */
 @property (nonatomic, strong) NSDictionary *header;
 /** 请求参数，不用加密 默认为nil */
 @property (nonatomic, strong) NSDictionary *normalParams;
@@ -32,11 +32,17 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) KLNetworkRequestMethod method;
 /** 获取请求方式字符串名称 */
 @property (nonatomic,   copy, readonly) NSString *methodName;
-/** 请求内容类型 默认为 application/x-www-form-urlencoded / KLNetworkContenTypeFormURLEncoded  */
+/** 标识MIME类型
+    默认 application/x-www-form-urlencoded - KLNetworkContenTypeFormURLEncoded
+ */
 @property (nonatomic, assign) KLNetworkContenType contenType;
+/** 标识序列化类型
+    默认 KLNetworkSerializerTypeHTTP - AFHTTPRequestSerializer
+ */
+@property (nonatomic, assign) KLNetworkSerializerType serializerType;
 /** 请求超时时间 默认 30s */
 @property (nonatomic, assign) NSTimeInterval timeoutInterval;
-/** api 版本号，默认 1.0 */
+/** api 版本号，默认 1.0.0*/
 @property (nonatomic,   copy) NSString *version;
 
 /** 生成请求实体 @return 请求对象*/
