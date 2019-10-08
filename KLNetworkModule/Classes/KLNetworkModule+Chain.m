@@ -9,6 +9,7 @@
 #import "KLNetworkModule+Chain.h"
 #import "KLNetworkChainRequest.h"
 #import "KLNetworkModule+Group.h"
+#import "KLNetworkRequest.h"
 #import <objc/runtime.h>
 
 @implementation KLNetworkModule (Chain)
@@ -58,39 +59,6 @@
         [self chainRequestDictionary][uuid] = taskID;
     }
 }
-
-//- (NSString *)sendUploadChainRequest:(ChainRequestConfigBlock)configBlock progress:(void (^)(NSProgress *uploadProgress))progress complete:(GroupResponseBlock)completeBlock {
-//    KLNetworkChainRequest *chainRequest = [[KLNetworkChainRequest alloc] init];
-//    if (configBlock) {
-//        configBlock(chainRequest);
-//    }
-//    
-//    if (chainRequest.runningRequest) {
-//        if (completeBlock) {
-//            [chainRequest setValue:completeBlock forKey:@"_completeBlock"];
-//        }
-//        
-//        NSString *uuid = [[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""];
-//        [self sendUploadChainRequst:chainRequest uuid:uuid];
-//        return uuid;
-//    }
-//    return nil;
-//}
-//
-//- (void)sendUploadChainRequst:(KLNetworkChainRequest *)chainRequest uuid:(NSString *)uuid {
-//    if (chainRequest.runningRequest != nil) {
-//        if (![self chainRequestDictionary]) {
-//            [self setChainRequestDictionary:[[NSMutableDictionary alloc] init]];
-//        }
-//        __weak __typeof(self) weakSelf = self;
-//        NSString *taskID = [self sendUploadRequest:chainRequest.runningRequest fromData:nil progress:^(NSProgress * _Nonnull uploadProgress) {
-//            
-//        } complete:^(KLNetworkResponse * _Nullable response) {
-//            
-//        }];
-//        [self chainRequestDictionary][uuid] = taskID;
-//    }
-//}
 
 - (void)cancelChainRequest:(NSString *)taskID {
     // 根据 Chain id 找到 taskid

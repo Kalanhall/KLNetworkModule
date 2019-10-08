@@ -49,7 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param     result                  响应结果
  @return    该请求对应的唯一 task id
  */
-- (NSString *_Nullable)sendUploadRequest:(nonnull KLNetworkRequest *)request fromData:(NSData *)bodyData progress:(void (^)(NSProgress *uploadProgress))progress complete:(nonnull KLNetworkResponseBlock)result;
+- (NSString *_Nullable)sendUploadRequest:(nonnull KLNetworkRequest *)request formData:(NSData *)bodyData progress:(void (^)(NSProgress *uploadProgress))progress complete:(nonnull KLNetworkResponseBlock)result;
 
 /**
  @abstract  上传请求
@@ -59,7 +59,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param     result                 响应结果
  @return    该请求对应的唯一 task id
  */
-- (NSString *_Nullable)sendUploadRequestWithConfigBlock:(nonnull RequestConfigBlock)requestBlock fromData:(NSData *)bodyData progress:(void (^)(NSProgress *uploadProgress))progress complete:(nonnull KLNetworkResponseBlock)result;
+- (NSString *_Nullable)sendUploadRequestWithConfigBlock:(nonnull RequestConfigBlock)requestBlock formData:(NSData *)bodyData progress:(void (^)(NSProgress *uploadProgress))progress complete:(nonnull KLNetworkResponseBlock)result;
 
 // MARK: - Download Request
 /**

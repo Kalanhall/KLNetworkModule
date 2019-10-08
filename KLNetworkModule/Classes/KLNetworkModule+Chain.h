@@ -16,8 +16,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString *)sendChainRequest:(nullable ChainRequestConfigBlock)configBlock
                       complete:(nullable GroupResponseBlock)completeBlock;
 
-//- (NSString *)sendUploadChainRequest:(ChainRequestConfigBlock)configBlock progress:(void (^)(NSProgress *uploadProgress))progress complete:(GroupResponseBlock)completeBlock;
-
 - (void)cancelChainRequest:(NSString *)taskID;
 
 @end

@@ -75,12 +75,8 @@
     [KLNetworkModule.shareManager sendGroupRequest:^(KLNetworkGroupRequest * _Nullable groupRequest) {
         for (NSInteger i = 0; i < 3; i ++) {
             KLNetworkRequest *request = [[KLNetworkRequest alloc] init];
-            request.baseURL = @"http://api.map.baidu.com";
-            request.path = @"/location/ip?ak=9zNKGguAbdNC6xwD7syftt533eIf7cSn&callback=showLocation";
-            request.method = KLNetworkRequestMethodPOST;
-            request.normalParams = @{@"normalParams" : @"normalParams"};
-            request.encryptParams = @{@"encryptParams" : @[@"1", @"2"]};
-            request.encryptType = KLEncryptTypeMD5;
+            request.path = @"/api/weather/city/101030100";
+            request.normalParams = @{@"city" : @"101030100"};
             [groupRequest addRequest:request];
         }
     } complete:^(NSArray<KLNetworkResponse *> * _Nullable responseObjects, BOOL isSuccess) {

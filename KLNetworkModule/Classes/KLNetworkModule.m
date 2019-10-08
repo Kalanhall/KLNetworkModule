@@ -102,7 +102,7 @@
 }
 
 // MARK: - 🔥 Upload Request
-- (NSString *_Nullable)sendUploadRequest:(nonnull KLNetworkRequest *)request fromData:(NSData *)bodyData progress:(void (^)(NSProgress *uploadProgress))progress complete:(nonnull KLNetworkResponseBlock)result
+- (NSString *_Nullable)sendUploadRequest:(nonnull KLNetworkRequest *)request formData:(NSData *)bodyData progress:(void (^)(NSProgress *uploadProgress))progress complete:(nonnull KLNetworkResponseBlock)result
 {
     // 拦截器处理
     if (![self needRequestInterceptor:request]) {
@@ -110,10 +110,10 @@
         return nil;
     }
     [KLNetworkLogger logDebugInfoWithRequest:request];
-    return [self requestWithUploadRequest:[request generateRequest] fromData:bodyData progress:progress complete:result];
+    return [self requestWithUploadRequest:[request generateRequest] formData:bodyData progress:progress complete:result];
 }
 
-- (NSString *_Nullable)sendUploadRequestWithConfigBlock:(nonnull RequestConfigBlock)requestBlock fromData:(NSData *)bodyData progress:(void (^)(NSProgress *uploadProgress))progress complete:(nonnull KLNetworkResponseBlock)result
+- (NSString *_Nullable)sendUploadRequestWithConfigBlock:(nonnull RequestConfigBlock)requestBlock formData:(NSData *)bodyData progress:(void (^)(NSProgress *uploadProgress))progress complete:(nonnull KLNetworkResponseBlock)result
 {
     KLNetworkRequest *request = [[KLNetworkRequest alloc] init];
     requestBlock(request);
@@ -123,10 +123,10 @@
         return nil;
     }
     [KLNetworkLogger logDebugInfoWithRequest:request];
-    return [self requestWithUploadRequest:[request generateRequest] fromData:bodyData progress:progress complete:result];
+    return [self requestWithUploadRequest:[request generateRequest] formData:bodyData progress:progress complete:result];
 }
 
-- (NSString *)requestWithUploadRequest:(NSURLRequest *)request fromData:(NSData *)bodyData progress:(void (^)(NSProgress *uploadProgress))progress complete:(KLNetworkResponseBlock)complete
+- (NSString *)requestWithUploadRequest:(NSURLRequest *)request formData:(NSData *)bodyData progress:(void (^)(NSProgress *uploadProgress))progress complete:(KLNetworkResponseBlock)complete
 {
     __block NSURLSessionUploadTask *task = nil;
     task = [self.sessionManager uploadTaskWithRequest:request fromData:bodyData progress:progress completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
