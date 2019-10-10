@@ -19,13 +19,17 @@
     [super viewDidLoad];
     KLNetworkConfigure.shareInstance.generalServer = @"http://t.weather.sojson.com";
     KLNetworkConfigure.shareInstance.enableDebug = YES;
+    KLNetworkConfigure.shareInstance.respondeSuccessKeys = @[@"code", @"status"];   /** 与后端约定的请求结果状态字段, 默认 code, status */
+    KLNetworkConfigure.shareInstance.respondeMsgKeys = @[@"message", @"msg"];       /** 与后端约定的请求结果消息字段集合, 默认 message, msg */
+    KLNetworkConfigure.shareInstance.respondeDataKeys = @[@"data", @"conten"];      /** 与后端约定的请求结果数据字段集合, 默认 data */
+    KLNetworkConfigure.shareInstance.respondeSuccessCode = @"200";                  /** 与后端约定的请求成功code，默认为 200 */
 }
 
 // TODO: 发送请求
 - (IBAction)sendRequest:(id)sender {
-        [self sendBasicRequest];
+//        [self sendBasicRequest];
 //        [self sendChainRequest];
-    //    [self sendGroupRequest];
+        [self sendGroupRequest];
 }
 
 /**
@@ -36,7 +40,11 @@
     request.path = @"/api/weather/city/101030100";
     request.normalParams = @{@"city" : @"101030100"};
     [KLNetworkModule.shareManager sendRequest:request complete:^(KLNetworkResponse * _Nullable response) {
-
+        if (response.status == KLNetworkResponseStatusSuccess) {
+            // 成功处理
+        } else {
+            // 失败处理
+        }
     }];
     
 //    [KLNetworkModule.shareManager sendRequestWithConfigBlock:^(KLNetworkRequest * _Nullable request) {

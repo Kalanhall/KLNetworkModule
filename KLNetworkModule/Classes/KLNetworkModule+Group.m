@@ -39,7 +39,6 @@
         
         [groupRequest.responseArray removeAllObjects];
         for (KLNetworkRequest *request in groupRequest.requestArray) {
-            
             NSString *taskID = [self sendRequest:request complete:^(KLNetworkResponse * _Nullable response) {
                 if ([groupRequest onFinishedOneRequest:request response:response]) {
                     NSLog(@"finish");

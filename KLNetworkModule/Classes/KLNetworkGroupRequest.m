@@ -44,6 +44,10 @@
     _finishedCount ++;
     if (_finishedCount == _requestArray.count) {
         if (_completeBlock) {
+            // 排序返回结果数组
+            [_responseArray sortUsingComparator:^NSComparisonResult(KLNetworkResponse *obj1, KLNetworkResponse *obj2) {
+                return obj1.requestId.integerValue > obj2.requestId.integerValue;
+            }];
             _completeBlock(_responseArray.copy, !_failed);
         }
         [self cleanCallbackBlocks];
