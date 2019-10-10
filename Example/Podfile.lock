@@ -14,7 +14,7 @@ PODS:
   - AFNetworking/Serialization (3.2.1)
   - AFNetworking/UIKit (3.2.1):
     - AFNetworking/NSURLSession
-  - KLNetworkModule (1.0.4):
+  - KLNetworkModule (1.1.0):
     - AFNetworking (= 3.2.1)
 
 DEPENDENCIES:
@@ -30,8 +30,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
-  KLNetworkModule: 814a948682cf311739905c09ac5dac034ae15546
+  KLNetworkModule: 6a05a5311405c1a7f9914e1c2af9f53244b73174
 
 PODFILE CHECKSUM: 12ff97d320722578c3f62e65d04f63109e635835
 
-COCOAPODS: 1.8.0.beta.1
+COCOAPODS: 1.8.3
