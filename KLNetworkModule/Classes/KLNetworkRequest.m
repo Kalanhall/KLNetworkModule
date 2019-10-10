@@ -38,7 +38,7 @@
     [serializer setCachePolicy:NSURLRequestUseProtocolCachePolicy];
     
     NSDictionary *parameters = [self generateRequestBody];
-    NSString *urlString = [self.baseURL stringByAppendingPathComponent:self.path];
+    NSString *urlString = [self.baseURL stringByAppendingString:[@"" stringByAppendingPathComponent:self.path]];
     NSMutableURLRequest *request = [serializer requestWithMethod:[self httpMethod] URLString:urlString parameters:parameters error:NULL];
     // 请求头
     NSMutableDictionary *header = request.allHTTPHeaderFields.mutableCopy;

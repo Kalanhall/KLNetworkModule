@@ -29,7 +29,7 @@
 /** 请求参数 */
 + (void)logDebugInfoWithRequest:(KLNetworkRequest *)request {
     NSMutableString *logString = [NSMutableString stringWithString:@"\n-----------------------------------执行请求-----------------------------------\n"];
-    [logString appendFormat:@"HTTP URL:\t\t%@\n", [request.baseURL stringByAppendingPathComponent:request.path]];
+    [logString appendFormat:@"HTTP URL:\t\t%@\n", [request.baseURL stringByAppendingString:[@"" stringByAppendingPathComponent:request.path]]];
     [logString appendFormat:@"Method:\t\t\t%@\n", [request methodName]];
     [logString appendFormat:@"Version:\t\t%@\n",  request.version];
     NSMutableDictionary *parameters = NSMutableDictionary.dictionary;
