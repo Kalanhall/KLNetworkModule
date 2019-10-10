@@ -51,10 +51,18 @@
         configuration.HTTPMaximumConnectionsPerHost = 10; // 同一IP最大并发数
         _sessionManager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:configuration];
         _sessionManager.responseSerializer = AFHTTPResponseSerializer.serializer; // 返回二进制，不可变更，返回值处理逻辑都是基于byte处理的
-        _sessionManager.securityPolicy.allowInvalidCertificates = YES;
-        _sessionManager.securityPolicy.validatesDomainName = NO;
+        _sessionManager.securityPolicy = [self customSecurityPolicy];
     }
     return _sessionManager;
+}
+
+- (AFSecurityPolicy *)customSecurityPolicy {
+    NSData *data = [NSData dataWithContentsOfFile:KLNetworkConfigure.shareInstance.certificatePath];
+    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+    securityPolicy.allowInvalidCertificates = NO;
+    securityPolicy.validatesDomainName = NO;
+    securityPolicy.pinnedCertificates = [NSSet.alloc initWithObjects:data, nil];
+    return securityPolicy;
 }
 
 // MARK: - 🔥 Nomal Request

@@ -13,6 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 /** 参数配置类 */
 @interface KLNetworkConfigure : NSObject
 
+/** HTTPS证书路径 */
+@property (nonatomic, copy  , nullable) NSString *certificatePath;
 /** 公共参数 */
 @property (nonatomic, strong, nullable) NSDictionary <NSString *, NSString *> *generalParameters;
 /** 动态公共参数*/

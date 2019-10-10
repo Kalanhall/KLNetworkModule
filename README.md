@@ -11,6 +11,8 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 ```ruby
 
+// HTTPS证书路径
+KLNetworkConfigure.shareInstance.certificatePath = [NSBundle.mainBundle pathForResource:@"example.cer" ofType:nil];
 // 全局静态公参
 KLNetworkConfigure.shareInstance.generalParameters = @{@"uuid" : @"1CB2134B7439A8A05C44D2E78CBFD3DE"};
 
@@ -115,7 +117,7 @@ KLNetworkModule is available through [CocoaPods](https://cocoapods.org). To inst
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'KLNetworkModule', '~> 2.0.0'
+pod 'KLNetworkModule', '~> 2.0.1'
 ```
 
 ## Author
