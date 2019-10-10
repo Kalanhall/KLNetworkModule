@@ -115,7 +115,7 @@ KLNetworkModule is available through [CocoaPods](https://cocoapods.org). To inst
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'KLNetworkModule'
+pod 'KLNetworkModule', '~> 1.1.0'
 ```
 
 ## Author
