@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'KLNetworkModule'
-  s.version          = '1.1.0'
+  s.version          = '2.0.0'
   s.summary          = '网络组件.'
 
 # This description is used to generate tags and improve search results.
@@ -39,5 +39,5 @@ Pod::Spec.new do |s|
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
-  s.dependency 'AFNetworking', '3.2.1'
+  s.dependency 'AFNetworking'
 end
