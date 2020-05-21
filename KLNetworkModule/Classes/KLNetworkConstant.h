@@ -28,7 +28,7 @@ typedef NS_ENUM (NSUInteger, KLNetworkResponseStatus){
 };
 
 typedef NS_ENUM (NSUInteger, KLEncryptType){
-    KLEncryptTypeBase64 = 0,
+    KLEncryptTypeBase64 = 1,
     KLEncryptTypeMD5            // 32位加密&大写字母
 };
 
