@@ -73,7 +73,7 @@
          if (KLNetworkConfigure.shareInstance.enableDebug) NSLog(@"该请求已经取消");
          return nil;
      }
-     [KLNetworkLogger logDebugInfoWithRequest:request];
+     if (KLNetworkConfigure.shareInstance.enableDebug) [KLNetworkLogger logDebugInfoWithRequest:request];
      return [self requestWithRequest:[request generateRequest]  complete:result];
 }
 
@@ -86,7 +86,7 @@
         if (KLNetworkConfigure.shareInstance.enableDebug) NSLog(@"该请求已经取消");
         return nil;
     }
-    [KLNetworkLogger logDebugInfoWithRequest:request];
+    if (KLNetworkConfigure.shareInstance.enableDebug) [KLNetworkLogger logDebugInfoWithRequest:request];
     return [self requestWithRequest:[request generateRequest] complete:result];
 }
 
@@ -117,7 +117,7 @@
         if (KLNetworkConfigure.shareInstance.enableDebug) NSLog(@"该请求已经取消");
         return nil;
     }
-    [KLNetworkLogger logDebugInfoWithRequest:request];
+    if (KLNetworkConfigure.shareInstance.enableDebug) [KLNetworkLogger logDebugInfoWithRequest:request];
     return [self requestWithUploadRequest:[request generateRequest] formData:bodyData progress:progress complete:result];
 }
 
@@ -130,7 +130,7 @@
         if (KLNetworkConfigure.shareInstance.enableDebug) NSLog(@"该请求已经取消");
         return nil;
     }
-    [KLNetworkLogger logDebugInfoWithRequest:request];
+    if (KLNetworkConfigure.shareInstance.enableDebug) [KLNetworkLogger logDebugInfoWithRequest:request];
     return [self requestWithUploadRequest:[request generateRequest] formData:bodyData progress:progress complete:result];
 }
 
@@ -179,7 +179,7 @@
         return nil;
     }
     
-    [KLNetworkLogger logDebugInfoWithRequest:request];
+    if (KLNetworkConfigure.shareInstance.enableDebug) [KLNetworkLogger logDebugInfoWithRequest:request];
     return [self requestWithDownloadRequest:[request generateRequest] destination:destination progress:progress complete:result];
 }
 
@@ -193,7 +193,7 @@
         return nil;
     }
     
-    [KLNetworkLogger logDebugInfoWithRequest:request];
+    if (KLNetworkConfigure.shareInstance.enableDebug) [KLNetworkLogger logDebugInfoWithRequest:request];
     return [self requestWithDownloadRequest:[request generateRequest] destination:destination progress:progress complete:result];
 }
 

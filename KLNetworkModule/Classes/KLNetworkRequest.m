@@ -65,12 +65,18 @@
     [mutableDic.allKeys enumerateObjectsUsingBlock:^(NSString *key, NSUInteger idx, BOOL * _Nonnull stop) {
         id value = mutableDic[key];
         NSError *error;
+        
         switch (self.encryptType) {
             case KLEncryptTypeBase64: {
-                NSData *data = [NSJSONSerialization dataWithJSONObject:value options:0 error:&error];
                 if (error == nil) {
-                    NSString *valueString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                    valueString = [self base64ToString:valueString];
+                    NSString *valueString = nil;
+                    if ([value isKindOfClass:NSString.class]) {
+                        valueString = [self base64ToString:value];
+                    } else if ([value isKindOfClass:NSData.class]) {
+                        valueString = [self base64ToString:[[NSString alloc] initWithData:(NSData *)value encoding:NSUTF8StringEncoding]];
+                    } else {
+                        valueString = [self base64ToString:[[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:value options:NSJSONWritingPrettyPrinted error:&error] encoding:NSUTF8StringEncoding]];
+                    }
                     [mutableDic setValue:valueString forKey:key];
                 } else {
                     NSLog(@"Serialization error.");
@@ -79,10 +85,15 @@
                 break;
                 
             case KLEncryptTypeMD5: {
-                NSData *data = [NSJSONSerialization dataWithJSONObject:value options:0 error:&error];
                 if (error == nil) {
-                    NSString *valueString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                    valueString = [self md5To32BitString:valueString];
+                    NSString *valueString = nil;
+                    if ([value isKindOfClass:NSString.class]) {
+                        valueString = [self md5To32BitString:value];
+                    } else if ([value isKindOfClass:NSData.class]) {
+                        valueString = [self md5To32BitString:[[NSString alloc] initWithData:(NSData *)value encoding:NSUTF8StringEncoding]];
+                    } else {
+                        valueString = [self md5To32BitString:[[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:value options:NSJSONWritingPrettyPrinted error:&error] encoding:NSUTF8StringEncoding]];
+                    }
                     [mutableDic setValue:valueString forKey:key];
                 } else {
                     NSLog(@"Serialization error.");
